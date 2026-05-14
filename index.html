@@ -3,8 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>4BV</title>
-  <meta name="description" content="Four pillars. One practice.">
+  <title>4BV — Four pillars. One practice.</title>
+  <meta name="description" content="4BV — physician-owned consulting at the intersection of medicine, technology, and contemplative practice.">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://4bv.ai/">
+  <meta property="og:title" content="4BV — Four pillars. One practice.">
+  <meta property="og:description" content="Physician-owned consulting at the intersection of medicine, technology, and contemplative practice.">
+  <meta property="og:image" content="https://4bv.ai/assets/logo.png">
+  <meta property="og:image:alt" content="4BV — four interlocking blue circles">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="4BV — Four pillars. One practice.">
+  <meta name="twitter:description" content="Physician-owned consulting at the intersection of medicine, technology, and contemplative practice.">
+  <meta name="twitter:image" content="https://4bv.ai/assets/logo.png">
+
   <link rel="icon" type="image/png" href="assets/logo.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -76,7 +91,7 @@
 
     .ring {
       fill: none;
-      stroke-width: 7;
+      stroke-width: 5;
       stroke-linecap: round;
       opacity: 0;
     }
@@ -99,20 +114,21 @@
       animation: ring4-arrive 1.6s cubic-bezier(0.16, 1, 0.3, 1) 1.1s forwards;
     }
 
+    /* Animations: each ring arrives from its own quadrant */
     @keyframes ring1-arrive {
-      from { opacity: 0; transform: translate(-12px, -8px); }
+      from { opacity: 0; transform: translate(14px, -14px); }
       to   { opacity: 1; transform: translate(0, 0); }
     }
     @keyframes ring2-arrive {
-      from { opacity: 0; transform: translate(8px, -12px); }
+      from { opacity: 0; transform: translate(-14px, -14px); }
       to   { opacity: 1; transform: translate(0, 0); }
     }
     @keyframes ring3-arrive {
-      from { opacity: 0; transform: translate(10px, 10px); }
+      from { opacity: 0; transform: translate(-14px, 14px); }
       to   { opacity: 1; transform: translate(0, 0); }
     }
     @keyframes ring4-arrive {
-      from { opacity: 0; transform: translate(-8px, 12px); }
+      from { opacity: 0; transform: translate(14px, 14px); }
       to   { opacity: 1; transform: translate(0, 0); }
     }
 
@@ -228,14 +244,14 @@
 
     <!-- SVG Logo: 4 interlocking rings — darkest behind, lightest in front -->
     <svg class="logo-svg" viewBox="5 0 230 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="4BV — four interlocking circles">
-      <!-- Ring 4: Dark Navy, lower-center (behind) -->
-      <circle class="ring ring-4" cx="112" cy="125" r="80" />
-      <!-- Ring 3: Navy, center-right -->
-      <circle class="ring ring-3" cx="128" cy="115" r="78" />
+      <!-- Ring 4: Dark Navy, lower-right (behind) -->
+      <circle class="ring ring-4" cx="125" cy="132" r="82" />
+      <!-- Ring 3: Navy, lower-left -->
+      <circle class="ring ring-3" cx="108" cy="123" r="82" />
       <!-- Ring 2: Light Blue, upper-left -->
-      <circle class="ring ring-2" cx="100" cy="92" r="79" />
+      <circle class="ring ring-2" cx="106" cy="104" r="82" />
       <!-- Ring 1: Pale Blue, upper-right (in front) -->
-      <circle class="ring ring-1" cx="135" cy="82" r="80" />
+      <circle class="ring ring-1" cx="132" cy="106" r="82" />
     </svg>
 
     <h1 class="wordmark">4BV</h1>
