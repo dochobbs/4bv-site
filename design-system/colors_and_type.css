@@ -1,0 +1,351 @@
+/* =========================================================================
+   4BV Consulting — Foundation tokens
+   Drop into any HTML artifact:  <link rel="stylesheet" href="colors_and_type.css">
+
+   Type system: PMN Caecilia LT Std (Peter Matthias Noordzij, 1990) for prose
+   — body, italic, display headings, the entire written voice. Paired with
+   Frutiger LT Std (Adrian Frutiger, 1976) for the UI register — datelines,
+   badges, button labels, identifiers. Humanist slab + humanist sans:
+   ledger-precise reading face against hospital-signage wayfinding.
+   ========================================================================= */
+
+/* ---------- @font-face : PMN Caecilia LT Std ----------
+   Caecilia has no designed optical sizes — hierarchy carries on weight:
+   Light (300) for hero/display, Roman (400) for body, Bold (700) for
+   subheads and strong emphasis, Heavy (900) reserved. */
+
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-Light.otf") format("opentype");
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-LightItalic.otf") format("opentype");
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-Roman.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-Italic.otf") format("opentype");
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-Bold.otf") format("opentype");
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-BoldItalic.otf") format("opentype");
+  font-weight: 700; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-Heavy.otf") format("opentype");
+  font-weight: 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Caecilia LT Std";
+  src: url("fonts/CaeciliaLTStd-HeavyItalic.otf") format("opentype");
+  font-weight: 900; font-style: italic; font-display: swap;
+}
+
+/* ---------- @font-face : Frutiger LT Std ---------- */
+
+@font-face {
+  font-family: "Frutiger LT Std";
+  src: url("fonts/FrutigerLTStd-Light.otf") format("opentype");
+  font-weight: 300; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Frutiger LT Std";
+  src: url("fonts/FrutigerLTStd-LightItalic.otf") format("opentype");
+  font-weight: 300; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Frutiger LT Std";
+  src: url("fonts/FrutigerLTStd-Roman.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Frutiger LT Std";
+  src: url("fonts/FrutigerLTStd-Italic.otf") format("opentype");
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+/* Bold 65 not shipped — weight 600 falls through to Helvetica Neue/Arial. */
+@font-face {
+  font-family: "Frutiger LT Std Cn";
+  src: url("fonts/FrutigerLTStd-Cn.otf") format("opentype");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+
+
+:root {
+  /* ---------- Brand palette (LP Digital Style Guide, Aug 2023) ----------
+     Authoritative LP brand blues, ordered deepest → lightest, matching
+     the four interlocking rings of the wordmark. Overrides the kit's
+     PNG-sampled approximations. */
+  --ink:        #050A30;   /* Dark Navy, Pantone 275 C — deepest ring */
+  --slate:      #003B73;   /* Navy, Pantone 654 C — second ring */
+  --blue:       #60A3D9;   /* Light Blue, Pantone 284 C — third ring */
+  --sky:        #AFDDFF;   /* Pale Blue, Pantone 291 C — fourth ring */
+
+  /* ---------- Surfaces ---------- */
+  --paper:      #FAFAF7;
+  --paper-2:    #F2F1EC;
+  --paper-3:    #E6E5DE;
+  --rule:       #E6E5DE;
+
+  /* ---------- Semantic foreground ---------- */
+  --text-primary:    var(--ink);
+  --text-secondary:  var(--slate);
+  --text-tertiary:   #6A7088;
+  --text-on-dark:    var(--paper);
+  --text-link:       var(--slate);    /* Navy carries links — Light Blue fails AA on paper */
+
+  /* ---------- Semantic background ---------- */
+  --surface:         var(--paper);
+  --surface-sunken:  var(--paper-2);
+  --surface-inverse: var(--ink);
+
+  /* ---------- States ---------- */
+  --success: #2F7D54;
+  --warning: #B27A1A;
+  --error:   #B23A3A;
+
+  /* ---------- Spacing scale of 8 ---------- */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  32px;
+  --space-xl:  64px;
+  --space-2xl: 128px;
+
+  /* ---------- Radii ---------- */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  16px;
+  --radius-pill: 999px;
+
+  /* ---------- Hairlines & shadow ---------- */
+  --border-hairline: 1px solid var(--rule);
+  --border-active:   1px solid var(--slate);
+  --shadow-atmosphere: 0 1px 2px rgba(16, 16, 48, 0.04), 0 8px 24px rgba(16, 16, 48, 0.06);
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 200ms;
+  --dur-base: 300ms;
+  --dur-slow: 400ms;
+  --dur-entrance: 1400ms;
+
+  /* ---------- Type ----------
+     PMN Caecilia carries every register of prose — body, italic, display.
+     One family, four weights (Light 300 / Roman 400 / Bold 700 / Heavy 900);
+     hierarchy is built on weight, not optical-size cuts. Frutiger LT Std is
+     the UI register only: datelines, badges, button labels, identifiers. */
+  --font-display:  "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
+  --font-subhead:  "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
+  --font-body:     "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
+  --font-caption:  "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
+  --font-ui:       "Frutiger LT Std", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:     "Frutiger LT Std Cn", "Frutiger LT Std", ui-monospace, monospace;
+
+  --fs-xs:   12px;
+  --fs-sm:   14px;
+  --fs-md:   19px;   /* body baseline */
+  --fs-lg:   22px;
+  --fs-xl:   28px;
+  --fs-2xl:  36px;
+  --fs-3xl:  48px;
+  --fs-4xl:  72px;
+
+  --lh-tight: 1.1;
+  --lh-base:  1.55;
+  --lh-loose: 1.7;
+
+  /* ---------- Layout ---------- */
+  --max-prose: 64ch;
+  --max-page:  1100px;
+}
+
+/* =========================================================================
+   Element baselines
+   ========================================================================= */
+
+* { box-sizing: border-box; }
+
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+
+body {
+  margin: 0;
+  background: var(--surface);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: var(--fs-md);
+  line-height: var(--lh-base);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  line-height: var(--lh-tight);
+  color: var(--text-primary);
+  margin: 0 0 var(--space-md);
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+/* h1/h2 use Caecilia Light at display sizes — the slab held confidently quiet */
+h1 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--fs-4xl);
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+}
+h2 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--fs-3xl);
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+}
+/* h3/h4 step up to Roman/Bold for mid-size hierarchy */
+h3 {
+  font-family: var(--font-subhead);
+  font-weight: 400;
+  font-size: var(--fs-2xl);
+}
+h4 {
+  font-family: var(--font-subhead);
+  font-weight: 700;
+  font-size: var(--fs-xl);
+}
+/* h5/h6 drop to Frutiger — UI register, not display */
+h5 {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: var(--fs-md);
+  letter-spacing: 0.01em;
+}
+h6 {
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: var(--fs-sm);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+p {
+  margin: 0 0 var(--space-md);
+  max-width: var(--max-prose);
+  text-wrap: pretty;
+}
+
+em, i { font-style: italic; }
+strong, b { font-weight: 700; }   /* Caecilia Bold — no 500 cut */
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: color var(--dur-slow) var(--ease-out);
+}
+a:hover { color: var(--ink); }
+a.inline { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 0.5px; }
+
+code, kbd, samp, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  letter-spacing: 0.04em;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  width: 32px;
+  margin: var(--space-lg) auto;
+}
+
+::selection { background: var(--sky); color: var(--ink); }
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* =========================================================================
+   Buttons — Frutiger, the wayfinding register
+   ========================================================================= */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  padding: 13px 22px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out),
+              transform 120ms var(--ease-out);
+  background: transparent;
+  color: var(--text-primary);
+}
+.btn:active { transform: scale(0.99); }
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+.btn--primary:hover { background: var(--slate); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-primary);
+  border-color: var(--rule);
+}
+.btn--ghost:hover { background: var(--paper-2); }
+
+.btn--text {
+  padding-left: 0;
+  padding-right: 0;
+  background: transparent;
+  color: var(--text-link);
+}
+.btn--text:hover { color: var(--ink); }
+
+/* =========================================================================
+   Cards
+   ========================================================================= */
+
+.card {
+  background: var(--paper-2);
+  border: var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg);
+}
+
+/* =========================================================================
+   Reduced motion floor
+   ========================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
