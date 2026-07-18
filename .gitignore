@@ -21,3 +21,6 @@ Desktop.ini
 
 # Local session state (already gitignored by convention)
 .remember/
+
+# Client invoices — never publish (this repo is the public 4bv.ai site)
+invoices/
