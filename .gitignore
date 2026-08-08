@@ -24,3 +24,7 @@ Desktop.ini
 
 # Client invoices — never publish (this repo is the public 4bv.ai site)
 invoices/
+
+# Browser-automation scratch output
+.playwright-mcp/
+wren-home-full.png

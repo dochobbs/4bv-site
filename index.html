@@ -23,6 +23,19 @@
   <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="stylesheet" href="design-system/colors_and_type.css">
 
+  <!-- Stamp the stored choice before first paint. No choice stored means the
+       OS preference decides, which the stylesheet already handles. -->
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('4bv-theme');
+        if (t === 'dark' || t === 'light') {
+          document.documentElement.setAttribute('data-theme', t);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <style>
     /* ---------- Page shell ---------- */
     body {
@@ -68,10 +81,10 @@
       stroke-linecap: round;
       opacity: 0;
     }
-    .ring-1 { stroke: var(--sky);   animation: ring1-arrive 1.6s var(--ease-out) 0.2s forwards; }
-    .ring-2 { stroke: var(--blue);  animation: ring2-arrive 1.6s var(--ease-out) 0.5s forwards; }
-    .ring-3 { stroke: var(--slate); animation: ring3-arrive 1.6s var(--ease-out) 0.8s forwards; }
-    .ring-4 { stroke: var(--ink);   animation: ring4-arrive 1.6s var(--ease-out) 1.1s forwards; }
+    .ring-1 { stroke: var(--ring-1); animation: ring1-arrive 1.6s var(--ease-out) 0.2s forwards; }
+    .ring-2 { stroke: var(--ring-2); animation: ring2-arrive 1.6s var(--ease-out) 0.5s forwards; }
+    .ring-3 { stroke: var(--ring-3); animation: ring3-arrive 1.6s var(--ease-out) 0.8s forwards; }
+    .ring-4 { stroke: var(--ring-4); animation: ring4-arrive 1.6s var(--ease-out) 1.1s forwards; }
 
     @keyframes ring1-arrive { from { opacity: 0; transform: translate(14px, -14px); } to { opacity: 1; transform: translate(0, 0); } }
     @keyframes ring2-arrive { from { opacity: 0; transform: translate(-14px, -14px); } to { opacity: 1; transform: translate(0, 0); } }
@@ -83,7 +96,7 @@
       font-weight: 300;
       font-size: clamp(2rem, 5vw, 2.5rem);
       letter-spacing: 0.01em;
-      color: var(--ink);
+      color: var(--text-primary);
       margin: 0;
       opacity: 0;
       transform: translateY(8px);
@@ -126,17 +139,17 @@
       font-weight: 300;
       font-size: 0.95rem;
       letter-spacing: 0.08em;
-      color: var(--ink);
+      color: var(--text-primary);
       text-transform: lowercase;
     }
-    .contact .email:hover { color: var(--slate); }
+    .contact .email:hover { color: var(--text-link); }
 
     .contact a.linkedin {
       color: var(--text-tertiary);
       display: inline-flex;
       align-items: center;
     }
-    .contact a.linkedin:hover { color: var(--slate); }
+    .contact a.linkedin:hover { color: var(--text-link); }
     .linkedin-icon { width: 18px; height: 18px; fill: currentColor; display: block; }
 
     @keyframes text-arrive { to { opacity: 1; transform: translateY(0); } }
@@ -161,7 +174,7 @@
     @keyframes scroll-cue-arrive {
       to { opacity: 1; transform: translateX(-50%) translateY(0); }
     }
-    .scroll-cue:hover { color: var(--slate); }
+    .scroll-cue:hover { color: var(--text-link); }
     .scroll-cue::before {
       content: "↓";
       display: block;
@@ -189,6 +202,11 @@
       margin: 0 auto;
       width: 100%;
     }
+    /* Three separation tiers, so "related section" doesn't read the same as
+       "end of page": 2xl before the footer, xl between stacked sections,
+       and the section's own lg/md rhythm inside. */
+    .section + .section { padding-top: 0; }
+    .section:has(+ .section) { padding-bottom: var(--space-xl); }
 
     .section__eyebrow {
       font-family: var(--font-ui);
@@ -205,7 +223,7 @@
       font-size: clamp(2rem, 4vw, var(--fs-3xl));
       letter-spacing: -0.01em;
       margin: 0 0 var(--space-lg);
-      color: var(--ink);
+      color: var(--text-primary);
     }
 
     .section__lede {
@@ -270,7 +288,7 @@
       font-family: var(--font-display);
       font-weight: 400;
       font-size: var(--fs-xl);
-      color: var(--ink);
+      color: var(--text-primary);
       letter-spacing: -0.005em;
       margin: 0 0 var(--space-sm);
     }
@@ -305,7 +323,7 @@
       font-family: var(--font-display);
       font-weight: 300;
       font-size: clamp(2.25rem, 5vw, var(--fs-3xl));
-      color: var(--ink);
+      color: var(--text-primary);
       margin: 0 0 var(--space-md);
     }
     .work__sub {
@@ -325,10 +343,10 @@
       max-width: var(--max-page);
       margin: 0 auto;
     }
-    .lane--families   { background: rgba(175, 221, 255, 0.18); } /* sky */
-    .lane--clinicians { background: rgba(96, 163, 217, 0.10); }  /* blue */
-    .lane--learners   { background: rgba(0, 59, 115, 0.06); }    /* slate */
-    .lane--research   { background: rgba(5, 10, 48, 0.04); }     /* ink */
+    .lane--families   { background: var(--lane-families); }
+    .lane--clinicians { background: var(--lane-clinicians); }
+    .lane--learners   { background: var(--lane-learners); }
+    .lane--research   { background: var(--lane-research); }
 
     .lane__header {
       display: flex;
@@ -347,7 +365,7 @@
       font-family: var(--font-display);
       font-weight: 300;
       font-size: clamp(1.75rem, 3vw, var(--fs-2xl));
-      color: var(--ink);
+      color: var(--text-primary);
       margin: 0;
       letter-spacing: -0.01em;
     }
@@ -394,7 +412,7 @@
                   box-shadow var(--dur-base) var(--ease-out);
     }
     .pcard:not(.pcard--static):hover {
-      border-color: var(--slate);
+      border-color: var(--text-tertiary);
       transform: translateY(-2px);
       box-shadow: var(--shadow-atmosphere);
     }
@@ -409,7 +427,7 @@
     .pcard__mark {
       width: 56px;
       height: 56px;
-      color: var(--slate);
+      color: var(--text-secondary);
       flex: 0 0 auto;
       border-radius: var(--radius-md);
       overflow: hidden;
@@ -430,15 +448,15 @@
       white-space: nowrap;
       align-self: flex-start;
     }
-    .pcard__status--live    { color: var(--success); border-color: rgba(47, 125, 84, 0.3); }
-    .pcard__status--beta    { color: var(--warning); border-color: rgba(178, 122, 26, 0.3); }
-    .pcard__status--paper   { color: var(--ink); border-color: rgba(5, 10, 48, 0.18); background: var(--paper-2); }
+    .pcard__status--live    { color: var(--success); border-color: var(--status-live-border); }
+    .pcard__status--beta    { color: var(--warning); border-color: var(--status-beta-border); }
+    .pcard__status--paper   { color: var(--text-primary); border-color: var(--status-paper-border); background: var(--paper-2); }
 
     .pcard__name {
       font-family: var(--font-display);
       font-weight: 400;
       font-size: var(--fs-xl);
-      color: var(--ink);
+      color: var(--text-primary);
       margin: 0;
       letter-spacing: -0.005em;
     }
@@ -485,19 +503,19 @@
       margin-top: auto;
       transition: gap var(--dur-base) var(--ease-out);
     }
-    .pcard:not(.pcard--static):hover .pcard__cta { gap: 10px; color: var(--ink); }
+    .pcard:not(.pcard--static):hover .pcard__cta { gap: 10px; color: var(--text-primary); }
     .pcard__cta--muted { color: var(--text-tertiary); }
 
     /* Inline links inside a CTA span (e.g. SpruceClaw "Email" word) */
     .pcard__cta a {
-      color: var(--ink);
+      color: var(--text-primary);
       font-weight: 500;
       text-decoration: underline;
       text-underline-offset: 4px;
       text-decoration-thickness: 1px;
       transition: color var(--dur-base) var(--ease-out);
     }
-    .pcard__cta a:hover { color: var(--slate); }
+    .pcard__cta a:hover { color: var(--text-link); }
 
     /* Advisory card — client logos */
     .pcard--advisory .pcard__head { align-items: center; }
@@ -517,6 +535,12 @@
       opacity: 0.85;
       filter: saturate(0.9);
       transition: opacity var(--dur-base) var(--ease-out);
+      /* Transparent in light. On dark these become a paper tile, since the
+         partner marks are all drawn for white grounds. */
+      background: var(--logo-plate);
+      padding: var(--logo-plate-pad);
+      border-radius: var(--logo-plate-radius);
+      box-sizing: content-box;
     }
     .pcard--advisory:hover .client__logo { opacity: 1; }
     /* XPC: image includes tagline below the mark, so background-image crop to top portion */
@@ -530,6 +554,128 @@
     }
     /* RVO is much wider than the others; constrain so it doesn't dominate */
     .client__logo--rvo { height: 18px; }
+
+    /* =====================================================================
+       THEME TOGGLE
+       ===================================================================== */
+    .theme-toggle {
+      position: fixed;
+      top: var(--space-md);
+      right: var(--space-md);
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border: 1px solid var(--rule);
+      border-radius: var(--radius-pill);
+      background: var(--paper);
+      color: var(--text-tertiary);
+      cursor: pointer;
+      transition: color var(--dur-base) var(--ease-out),
+                  border-color var(--dur-base) var(--ease-out);
+    }
+    .theme-toggle:hover { color: var(--text-primary); border-color: var(--text-tertiary); }
+    .theme-toggle svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 1.6; }
+    /* Sun shows in dark (click for light); moon shows in light. */
+    .theme-toggle .icon-sun { display: none; }
+    :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+    :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: block; }
+      :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
+    }
+
+    /* =====================================================================
+       SHIPPING — contribution grid
+       ===================================================================== */
+    /* The lede is a caption for the grid, not a section intro — pull it in
+       so the two read as one unit. */
+    #shipping .section__lede { margin-bottom: var(--space-md); }
+
+    .shipping__grid {
+      display: grid;
+      grid-auto-flow: column;
+      grid-template-rows: repeat(7, 10px);
+      gap: 3px;
+      overflow-x: auto;
+      padding-bottom: var(--space-sm);
+      margin-top: 0;
+    }
+    .shipping__day {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      background: var(--paper-2);
+    }
+    .shipping__day[data-level="1"] { background: var(--sky); }
+    .shipping__day[data-level="2"] { background: var(--blue); }
+    .shipping__day[data-level="3"] { background: var(--slate); }
+    .shipping__day[data-level="4"] { background: var(--ink); }
+    :root[data-theme="dark"] .shipping__day[data-level="4"] { background: var(--ring-1); }
+    :root[data-theme="dark"] .shipping__day[data-level="3"] { background: var(--ring-2); }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .shipping__day[data-level="4"] { background: var(--ring-1); }
+      :root:not([data-theme="light"]) .shipping__day[data-level="3"] { background: var(--ring-2); }
+    }
+    .shipping__legend {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-ui);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-top: var(--space-sm);
+    }
+
+    /* =====================================================================
+       WRITING
+       ===================================================================== */
+    .writing__list {
+      list-style: none;
+      margin: var(--space-lg) 0 0;
+      padding: 0;
+      max-width: 72ch;
+    }
+    .writing__item { border-top: var(--border-hairline); }
+    .writing__item:last-child { border-bottom: var(--border-hairline); }
+    .writing__link {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: var(--space-sm) var(--space-md);
+      padding: var(--space-md) 0;
+      text-decoration: none;
+      color: inherit;
+      transition: color var(--dur-base) var(--ease-out);
+    }
+    .writing__link:hover .writing__title { color: var(--text-link); }
+    .writing__date {
+      flex: 0 0 auto;
+      font-family: var(--font-ui);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      min-width: 8ch;
+    }
+    .writing__title {
+      font-family: var(--font-display);
+      font-size: var(--fs-lg);
+      font-weight: 400;
+      color: var(--text-primary);
+      transition: color var(--dur-base) var(--ease-out);
+    }
+    .writing__where {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--fs-sm);
+      color: var(--text-tertiary);
+    }
 
     /* =====================================================================
        FOOTER
@@ -552,7 +698,7 @@
       font-weight: 300;
       font-size: 0.95rem;
       letter-spacing: 0.08em;
-      color: var(--ink);
+      color: var(--text-primary);
       text-transform: lowercase;
     }
     .footer__meta {
@@ -568,6 +714,16 @@
   </style>
 </head>
 <body>
+
+<button class="theme-toggle" type="button" aria-label="Switch between light and dark" title="Switch theme">
+  <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="12" cy="12" r="4"/>
+    <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" stroke-linecap="round"/>
+  </svg>
+</button>
 
 <div class="page">
 
@@ -625,16 +781,16 @@
               <div class="pcard__mark pcard__mark--pixel" aria-hidden="true">
                 <img src="assets/projects/wren_mark.png" alt="">
               </div>
-              <span class="pcard__status pcard__status--beta">Beta</span>
+              <span class="pcard__status pcard__status--beta">Free beta</span>
             </div>
             <h4 class="pcard__name">Wren</h4>
-            <p class="pcard__lede"><em>A gentle pediatric assistant for parents.</em> A second opinion at 2am, in the language of a friend who happens to know things.</p>
-            <p class="pcard__tagline">Make the hard moments a little less hard.</p>
+            <p class="pcard__lede"><em>A gentle pediatric assistant for parents.</em> Text it at 2am about the fever, the rash, the worry you can't quite name, and it helps you sort what's worth watching and what shouldn't wait.</p>
+            <p class="pcard__tagline">Never wonder alone.</p>
             <div class="pcard__chips">
-              <span class="pcard__chip">Warm, knowledgeable</span>
-              <span class="pcard__chip">Less alone, more clarity</span>
+              <span class="pcard__chip">Text it, no sign-up</span>
+              <span class="pcard__chip">Birth through 17</span>
             </div>
-            <span class="pcard__cta">Open the beta  →</span>
+            <span class="pcard__cta">Say hi to Wren →</span>
           </a>
         </div>
       </div>
@@ -659,7 +815,7 @@
             </div>
             <h4 class="pcard__name">BRTLB</h4>
             <p class="pcard__lede">A pediatric DPC AI scribe. Browser-first, bring-your-own API keys, no patient data on our servers.</p>
-            <span class="pcard__cta">Try BRTLB  →</span>
+            <span class="pcard__cta">Try BRTLB →</span>
           </a>
 
           <div class="pcard pcard--static">
@@ -676,8 +832,24 @@
             </div>
             <h4 class="pcard__name">SpruceClaw</h4>
             <p class="pcard__lede">HIPAA-compliant AI assistant framework that turns Spruce Health DMs into a secure command channel for clinicians.</p>
-            <span class="pcard__cta"><a href="mailto:michael@hobbs.md">Email</a> for access  →</span>
+            <span class="pcard__cta"><a href="mailto:michael@hobbs.md">Email</a> for access →</span>
           </div>
+
+          <a href="decon/" class="pcard">
+            <div class="pcard__head">
+              <div class="pcard__mark" aria-hidden="true">
+                <img src="assets/projects/decon_mark.svg" alt="">
+              </div>
+              <span class="pcard__status">Open source</span>
+            </div>
+            <h4 class="pcard__name">Clinician Decon</h4>
+            <p class="pcard__lede">Turns clinical text into a safe, paste-ready prompt for an outside AI. De-identification masks identifiers and takes the medicine with it; decon strips the identifiers and keeps the clinical facts. Runs on your own machine.</p>
+            <div class="pcard__chips">
+              <span class="pcard__chip">Local-first</span>
+              <span class="pcard__chip">Age bands, not asterisks</span>
+            </div>
+            <span class="pcard__cta">How it works →</span>
+          </a>
 
           <a href="https://dochobbs.github.io/northstar-site/" class="pcard" target="_blank" rel="noopener noreferrer">
             <div class="pcard__head">
@@ -691,7 +863,7 @@
             </div>
             <h4 class="pcard__name">Northstar</h4>
             <p class="pcard__lede">The pediatric intelligence layer — clinical AI tuned for the patterns, dosing, growth curves, and red flags adult systems miss.</p>
-            <span class="pcard__cta">Tour Northstar  →</span>
+            <span class="pcard__cta">Tour Northstar →</span>
           </a>
 
           <div class="pcard pcard--static pcard--advisory">
@@ -746,7 +918,7 @@
               <span class="pcard__chip">Oread · synthetic patients</span>
               <span class="pcard__chip">Mneme · teaching EMR</span>
             </div>
-            <span class="pcard__cta">Tour Metis  →</span>
+            <span class="pcard__cta">Tour Metis →</span>
           </a>
 
           <a href="https://ai101.health" class="pcard" target="_blank" rel="noopener noreferrer">
@@ -758,7 +930,7 @@
             </div>
             <h4 class="pcard__name">AI101</h4>
             <p class="pcard__lede">A practical curriculum on AI in clinical practice — for clinicians who want to use these tools well, not just hear about them.</p>
-            <span class="pcard__cta">Open AI101  →</span>
+            <span class="pcard__cta">Open AI101 →</span>
           </a>
 
         </div>
@@ -794,7 +966,7 @@
             </div>
             <h4 class="pcard__name">A pediatric AI benchmark</h4>
             <p class="pcard__lede">The first evaluation suite built specifically for pediatric clinical AI — because adult benchmarks don't catch the failures that hurt kids. Methodology paper preprint incoming.</p>
-            <a href="mailto:michael@hobbs.md" class="pcard__cta">Get notified  →</a>
+            <a href="mailto:michael@hobbs.md" class="pcard__cta">Get notified →</a>
           </div>
 
           <a href="https://dochobbs.github.io/cds-eval-lab/" class="pcard" target="_blank" rel="noopener noreferrer">
@@ -806,13 +978,74 @@
             </div>
             <h4 class="pcard__name">Clinical decision support evaluation</h4>
             <p class="pcard__lede">Head-to-head evaluation against the major third-party CDS tools, paired with original prompt design — our pediatric-tuned prompts perform on par with the commercial leaders. Internal benchmarks, structured grading, local-first stack.</p>
-            <span class="pcard__cta">Read the methodology  →</span>
+            <span class="pcard__cta">Read the methodology →</span>
+          </a>
+
+          <a href="prompts/" class="pcard">
+            <div class="pcard__head">
+              <div class="pcard__mark" style="background: var(--paper-2);" aria-hidden="true">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                  <g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round">
+                    <path d="M34 32 L20 50 L34 68"/>
+                    <path d="M66 32 L80 50 L66 68"/>
+                    <path d="M57 26 L43 74" stroke-width="3.4"/>
+                  </g>
+                </svg>
+              </div>
+              <span class="pcard__status">Open source</span>
+            </div>
+            <h4 class="pcard__name">The CDS prompts</h4>
+            <p class="pcard__lede">The two prompts behind the evaluation, published in full. One runs on the model's own knowledge; the other adds three independently framed searches and a rule about refusing to fill gaps. The difference between them is smaller than you'd think.</p>
+            <span class="pcard__cta">Read the prompts →</span>
           </a>
 
         </div>
       </div>
     </section>
 
+  </section>
+
+  <!-- ============================================================
+       WRITING
+       ============================================================ -->
+  <section class="section" id="writing" aria-labelledby="writing-h">
+    <p class="section__eyebrow">Writing</p>
+    <h2 id="writing-h" class="section__h">Notes from the work.</h2>
+    <ul class="writing__list">
+      <li class="writing__item">
+        <a class="writing__link" href="prompts/">
+          <span class="writing__date">Aug 2026</span>
+          <span class="writing__title">Two prompts, one rule, and the gap between them</span>
+          <span class="writing__where">4bv.ai</span>
+        </a>
+      </li>
+      <li class="writing__item">
+        <a class="writing__link" href="decon/">
+          <span class="writing__date">Aug 2026</span>
+          <span class="writing__title">Decontextualization is not de-identification</span>
+          <span class="writing__where">4bv.ai</span>
+        </a>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ============================================================
+       SHIPPING — contribution grid, refreshed nightly by Actions
+       ============================================================ -->
+  <section class="section" id="shipping" aria-labelledby="shipping-h">
+    <p class="section__eyebrow">Still building</p>
+    <h2 id="shipping-h" class="section__h">A year of shipping.</h2>
+    <p class="section__lede" id="shipping-summary">Public and private commits across every project on this page.</p>
+    <div class="shipping__grid" id="shipping-grid" role="img" aria-label="Daily contribution activity over the past year"></div>
+    <div class="shipping__legend">
+      <span>Less</span>
+      <span class="shipping__day" data-level="0"></span>
+      <span class="shipping__day" data-level="1"></span>
+      <span class="shipping__day" data-level="2"></span>
+      <span class="shipping__day" data-level="3"></span>
+      <span class="shipping__day" data-level="4"></span>
+      <span>More</span>
+    </div>
   </section>
 
   <!-- ============================================================
@@ -836,6 +1069,67 @@
   </footer>
 
 </div>
+
+<script>
+  /* ---------- Theme toggle ----------
+     Explicit choice wins and persists. Clearing it would fall back to the OS,
+     but there's no UI for that yet — the toggle is a straight two-way flip. */
+  (function () {
+    var root = document.documentElement;
+    var btn = document.querySelector('.theme-toggle');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var explicit = root.getAttribute('data-theme');
+      var current = explicit || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      var next = current === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('4bv-theme', next); } catch (e) {}
+    });
+  })();
+
+  /* ---------- Contribution grid ----------
+     assets/contributions.json is regenerated nightly by .github/workflows.
+     If the fetch fails the section simply stays empty rather than showing
+     a stale or invented year. */
+  (function () {
+    var grid = document.getElementById('shipping-grid');
+    var summary = document.getElementById('shipping-summary');
+    if (!grid) return;
+
+    fetch('assets/contributions.json', { cache: 'no-cache' })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (data) {
+        var days = data.days || [];
+        if (!days.length) throw new Error('empty');
+
+        var counts = days.map(function (d) { return d.count; }).filter(function (c) { return c > 0; });
+        counts.sort(function (a, b) { return a - b; });
+        var q = function (p) { return counts.length ? counts[Math.floor((counts.length - 1) * p)] : 0; };
+        var cuts = [q(0.25), q(0.5), q(0.75)];
+
+        var frag = document.createDocumentFragment();
+        days.forEach(function (d) {
+          var cell = document.createElement('span');
+          cell.className = 'shipping__day';
+          var level = 0;
+          if (d.count > 0) level = d.count <= cuts[0] ? 1 : d.count <= cuts[1] ? 2 : d.count <= cuts[2] ? 3 : 4;
+          cell.setAttribute('data-level', String(level));
+          cell.title = d.count + (d.count === 1 ? ' contribution' : ' contributions') + ' on ' + d.date;
+          frag.appendChild(cell);
+        });
+        grid.appendChild(frag);
+
+        if (summary && typeof data.total === 'number') {
+          summary.textContent = data.total.toLocaleString() +
+            ' contributions in the last year, across public and private work.';
+        }
+      })
+      .catch(function () {
+        var section = document.getElementById('shipping');
+        if (section) section.hidden = true;
+      });
+  })();
+</script>
 
 </body>
 </html>
