@@ -3,18 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Decontextualization is not de-identification — 4BV</title>
-  <meta name="description" content="De-identification masks identifiers and takes the clinical meaning with it. Decontextualization removes the identifiers and keeps the medicine. Notes on Clinician Decon.">
+  <title>Clinical decontextualization with semantic preservation — 4BV</title>
+  <meta name="description" content="Removing obvious identifiers, Safe Harbor, Expert Determination, pseudonymization, and PHI minimization are five different things. In pediatrics, the fields that identify a patient are often the same fields that make the answer correct.">
 
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://4bv.ai/decon/">
-  <meta property="og:title" content="Decontextualization is not de-identification">
-  <meta property="og:description" content="De-identification masks identifiers and takes the clinical meaning with it. Decontextualization removes the identifiers and keeps the medicine.">
+  <meta property="og:title" content="Clinical decontextualization with semantic preservation">
+  <meta property="og:description" content="A naive scrubber can make clinical AI less safe, not more. Notes on designing PHI minimization that preserves the clinical signal.">
   <meta property="og:image" content="https://4bv.ai/assets/logo.png">
 
   <link rel="icon" type="image/png" href="../assets/logo.png">
   <link rel="stylesheet" href="../design-system/colors_and_type.css">
   <link rel="stylesheet" href="../design-system/page.css">
+
+  <style>
+    /* Quiet provenance label under a stage name in the learning-arc table. */
+    table.data .drop {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-top: 3px;
+    }
+
+    .rule-grid {
+      display: grid;
+      gap: var(--space-md);
+      grid-template-columns: 1fr;
+      margin: var(--space-lg) 0;
+      max-width: 68ch;
+    }
+    @media (min-width: 720px) { .rule-grid { grid-template-columns: 1fr 1fr; } }
+    .rule {
+      border: var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      background: var(--paper-2);
+    }
+    .rule h4 {
+      font-family: var(--font-ui);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin: 0 0 var(--space-sm);
+      font-weight: 400;
+    }
+    .rule ul { margin: 0; padding-left: 1.1em; }
+    .rule li { font-size: var(--fs-sm); line-height: 1.5; margin-bottom: 6px; }
+
+    /* Worked example: input -> two policies */
+    .example { margin: var(--space-lg) 0 var(--space-xl); }
+    .example__q {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: var(--fs-lg);
+      color: var(--text-primary);
+      margin: 0 0 var(--space-sm);
+    }
+    .example__why {
+      font-family: var(--font-body);
+      font-size: var(--fs-sm);
+      color: var(--text-secondary);
+      max-width: 66ch;
+      margin: var(--space-sm) 0 0;
+    }
+    .xform {
+      display: grid;
+      gap: var(--space-sm);
+      grid-template-columns: 1fr;
+      margin-top: var(--space-md);
+    }
+    @media (min-width: 860px) { .xform { grid-template-columns: 1fr 1fr; } }
+    .xform__cell { min-width: 0; }
+    .xform__label {
+      font-family: var(--font-ui);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      display: block;
+      margin-bottom: 6px;
+    }
+    .xform__label--bad { color: var(--error); }
+    .xform__label--good { color: var(--success); }
+    .xform pre.code { margin: 0; white-space: pre-wrap; word-break: break-word; }
+    .xform__cell--full { grid-column: 1 / -1; }
+
+    .synthetic-note {
+      font-family: var(--font-body);
+      font-style: italic;
+      font-size: var(--fs-sm);
+      color: var(--text-tertiary);
+      margin: calc(var(--space-md) * -1) 0 var(--space-lg);
+      max-width: 68ch;
+    }
+  </style>
 
   <script>
     (function () {
@@ -43,134 +129,322 @@
 
   <header class="masthead">
     <p class="masthead__eyebrow">Clinician Decon</p>
-    <h1 class="masthead__h">Decontextualization is not de-identification.</h1>
-    <p class="masthead__lede">One masks identifiers and takes the clinical meaning with them. The other removes the identifiers and keeps the medicine.</p>
+    <h1 class="masthead__h">A naive scrubber makes clinical AI less safe.</h1>
+    <p class="masthead__lede">In pediatrics, the fields that identify a patient are frequently the same fields that make the answer correct. Deleting them protects the record and breaks the medicine.</p>
     <p class="masthead__meta">Open source <span class="dot">·</span> Local-first <span class="dot">·</span> Research release</p>
   </header>
 
   <div class="prose">
 
-    <p>Clinicians are already pasting clinical text into general AI tools. That is happening today, in every practice, with or without a policy about it. The useful question is not whether to stop it — it is what a physician should be able to paste.</p>
+    <p>Clinicians are already pasting clinical text into general AI tools. That happens today, in every practice, with or without a policy about it. The useful question is not whether to stop it — it is what a physician should be able to paste, and what a tool should do to the text first.</p>
 
-    <p><strong>Clinician Decon</strong> is a local-first tool that takes PHI-bearing clinical text and turns it into a reviewable, paste-ready prompt. You paste the text, it runs on your own machine, it shows you exactly what it removed or generalized, and you copy the safe version out yourself. Raw text is processed on <code>127.0.0.1</code>. Nothing is sent anywhere, and the tool never puts prompt text into a third-party URL.</p>
+    <p>The obvious answer is to strip anything that looks like an identifier. That answer is wrong, and it is wrong in a way that is hard to see, because the output looks safer while the clinical question quietly stops being answerable.</p>
 
-    <h2>The distinction that matters</h2>
+    <h2>Five different problems wearing one name</h2>
 
-    <p>De-identification asks whether a document can be shared with identifiers removed. It is built for releasing notes and datasets. Decontextualization asks a narrower and more practical question: can this clinician safely ask a useful question right now?</p>
-
-    <p>The difference shows up immediately in what each one does to a clinical fact. A de-ID system is rewarded for emptying the text. A decon system is rewarded for keeping the text answerable.</p>
+    <p>"De-identification" gets used for at least five distinct operations with different legal standing, different threat models, and different failure modes. Conflating them is the root of most bad tooling in this space.</p>
 
     <div class="table-scroll">
       <table class="data">
         <thead>
-          <tr>
-            <th>Input contains</th>
-            <th>Traditional de-ID might</th>
-            <th>Decon aims to</th>
-          </tr>
+          <tr><th>Operation</th><th>What it actually asserts</th><th>Where it breaks for prompts</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td><code>DOB 3/15/2013</code></td>
-            <td>Mask the date</td>
-            <td>Convert to <code>adolescent</code></td>
+            <td><strong>Removing obvious identifiers</strong></td>
+            <td>Nothing formal. A pattern sweep for names, numbers, and dates.</td>
+            <td>No standard behind it, and it silently destroys clinical fields that happen to look like identifiers.</td>
           </tr>
           <tr>
-            <td><code>A1c 8.2 and BMI 31</code></td>
-            <td>Leave exact values, or mask them</td>
-            <td>Convert to <code>elevated A1c</code> and <code>obesity-range BMI</code> when the exact numbers aren't needed</td>
+            <td><strong>HIPAA Safe Harbor</strong></td>
+            <td>A regulatory determination: the eighteen enumerated identifier categories are gone, including all elements of dates and ages over 89.</td>
+            <td>It is a document-release standard. Applied to a prompt it removes exact dates and age granularity wholesale — which in pediatrics is the clinical variable, not metadata.</td>
           </tr>
           <tr>
-            <td><code>Addison Brooks has Addison disease</code></td>
-            <td>Mask both instances of <code>Addison</code></td>
-            <td>Remove the patient name, preserve <code>Addison disease</code></td>
+            <td><strong>Expert Determination</strong></td>
+            <td>A qualified statistician certifies the re-identification risk is very small for a defined data set and recipient.</td>
+            <td>It is a determination about a corpus and a context, not a per-message operation. There is no such thing as expert-determining an ad-hoc paste at 2am.</td>
           </tr>
           <tr>
-            <td><code>Only HLH patient on 7th floor today</code></td>
-            <td>Leave the uniqueness context intact</td>
-            <td>Convert to <code>rare HLH case</code>, drop the floor and the date</td>
+            <td><strong>Pseudonymization</strong></td>
+            <td>Identifiers are replaced with consistent surrogates and a re-linkage key exists somewhere.</td>
+            <td>Because the key exists, the data is generally still regulated. Consistent surrogates also leak across messages — the same token recurring is itself a signal.</td>
           </tr>
           <tr>
-            <td><code>MRN LP-2024-08432</code></td>
-            <td>Mask with asterisks</td>
-            <td>Replace with <code>[MRN]</code> and record only the removed category</td>
+            <td><strong>PHI minimization before a downstream send</strong></td>
+            <td>Nothing about legal status. Only: less identity information left the machine than went in, and a human reviewed what left.</td>
+            <td>This is the honest framing for prompts — and the one nobody has built good tooling for.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <div class="note">
-      <p>The goal is not to prove a document is legally de-identified. The goal is to help a clinician build a safer, clinically useful prompt before using a tool that should never receive raw PHI.</p>
+      <p>Clinician Decon does the fifth thing. It does not perform, claim, or approximate the first four. That scoping is not modesty; it is what makes the design tractable.</p>
     </div>
 
-    <h2>What it removes, and what it protects</h2>
+    <h2>Why deletion degrades safety</h2>
 
-    <p>It strips the categories you'd expect — names, including relatives' and providers'; chart, claim, accession and device identifiers; phone numbers, emails, URLs and IP addresses; street addresses, ZIP-level geography, schools, camps, facilities, rooms, units, beds and floors; exact dates, relative dates, exact ages and birth dates. It also strips prompt-injection text, including instructions that try to talk the pipeline into preserving identifiers.</p>
-
-    <p>What it deliberately keeps is the part that makes the question worth asking:</p>
+    <p>The dangerous assumption is that identity information and clinical information are separable — that you can pull one out and leave the other intact. In clinical text they are frequently the same tokens.</p>
 
     <ul>
-      <li>Birth dates and exact ages become clinical age bands</li>
-      <li>Decision-relevant labs stay when triage or criteria depend on them</li>
-      <li>Exact weights stay when the answer is weight-based dosing</li>
-      <li>Broad relationship context stays, as in <code>parent reports patient</code></li>
-      <li>Clinical eponyms and diagnoses stay, as long as they aren't functioning as identifiers</li>
+      <li><strong>Dates and chronology.</strong> A date of service is an identifier. The <em>interval</em> between two events — three days of fever, symptoms starting two weeks after a tick bite, a rash that appeared the day after a new antibiotic — is often the entire diagnostic content. A scrubber that maps every date to <code>[DATE]</code> destroys the chronology while leaving the sentence grammatical, which means the model answers anyway, without the thing that determined the answer.</li>
+      <li><strong>Age.</strong> In adult medicine an age is usually background. In pediatrics it drives dosing, the differential, growth interpretation, and the red-flag thresholds. Fever in a three-week-old and fever in a three-year-old are different emergencies. Safe Harbor's instinct — drop the birth date — is correct; a scrubber's instinct to drop the derived age with it is catastrophic.</li>
+      <li><strong>Geography.</strong> A street address identifies. A region can be the diagnosis: tick-borne illness, coccidioidomycosis, lead exposure risk, altitude. Blanket geographic removal makes the model default to base rates that do not apply.</li>
+      <li><strong>Relationships.</strong> A mother's name identifies. That the historian <em>is</em> the mother, or that a sibling has the same condition, or that the child is in foster care, changes both the differential and the disposition.</li>
+      <li><strong>Rare status.</strong> "The only patient on this unit with this condition" contains no identifier at all and is nonetheless re-identifying, because the population it describes has one member. Almost no de-ID tool catches this, because there is no pattern to match.</li>
     </ul>
 
-    <h2>Three cases where the distinction bites</h2>
+    <p>So a naive scrubber fails in both directions at once. It removes clinical signal it should have kept, and it retains re-identifying context it should have removed — because the first is easy to pattern-match and the second is not.</p>
 
-    <p class="masthead__meta" style="margin-top:0">All examples below are synthetic. No real patient data appears on this page.</p>
+    <div class="callout">
+      <span class="callout__label">The design position</span>
+      <p>Treat this as clinical decontextualization with <strong>semantic preservation</strong>, not regex-and-delete. The transformed case has to retain clinically meaningful temporal relationships and attributes while minimizing unnecessary identity information. Those are two objectives, and a system optimizing only the second will reliably score well and answer worse.</p>
+    </div>
 
-    <h3>The eponym collision</h3>
-    <p>A name-matching de-ID pass sees the string <code>Addison</code> twice and masks both. One of them was the diagnosis.</p>
-    <div class="code-block">
-      <div class="code-block__head"><span class="code-block__label">Input</span></div>
-      <pre class="code">Referral for Addison Brooks. Addison disease on fludrocortisone,
+    <h2>The decision rule</h2>
+
+    <p>Semantic preservation needs an operational test, or it collapses into "keep whatever seems useful." The rule the tool implements is a conjunction on both sides.</p>
+
+    <div class="rule-grid">
+      <div class="rule">
+        <h4>Keep a fact when all three hold</h4>
+        <ul>
+          <li>It is needed to answer the clinical question</li>
+          <li>It is not a direct identifier on its own</li>
+          <li>It has been generalized wherever exactness is not clinically necessary</li>
+        </ul>
+      </div>
+      <div class="rule">
+        <h4>Remove or generalize when any one holds</h4>
+        <ul>
+          <li>It directly identifies the patient, caregiver, clinician, facility, or local workflow</li>
+          <li>It narrows the patient too far through time, place, rare status, or "only patient" context</li>
+          <li>It is exact where the clinical question only needs a category or a band</li>
+        </ul>
+      </div>
+    </div>
+
+    <p>The third keep-condition is the one that does the real work. It converts rather than deletes: a birth date becomes an age band, an exact lab becomes a severity category, a specific location becomes a region — <em>when</em> the question does not need precision. When it does, the value stays.</p>
+
+    <h2>What that looks like on real questions</h2>
+
+    <p class="synthetic-note">Every example below is synthetic. No real patient data appears on this page.</p>
+
+    <div class="example">
+      <p class="example__q">A birth date is an identifier. The age is the answer.</p>
+      <div class="xform">
+        <div class="xform__cell xform__cell--full">
+          <span class="xform__label">Input</span>
+          <pre class="code">Noah Rivera DOB 3/15/2013 MRN LP-2024-08432 needs catch-up
+vaccines before school starts Monday.</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--bad">Identifier-stripping</span>
+          <pre class="code">[NAME] DOB [DATE] MRN [ID] needs catch-up
+vaccines before school starts [DATE].</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--good">Semantic preservation</span>
+          <pre class="code">[NAME] adolescent [MRN] needs catch-up
+vaccines before school starts [DATE].</pre>
+        </div>
+      </div>
+      <p class="example__why">The exact birth date is identifying and unnecessary. The age band is clinically essential, because the schedule depends on it. The difference is not that one redacts more — it is that one converts the identifier into the signal the clinician actually needed.</p>
+    </div>
+
+    <div class="example">
+      <p class="example__q">Sometimes the exact number has to survive.</p>
+      <div class="xform">
+        <div class="xform__cell xform__cell--full">
+          <span class="xform__label">Input</span>
+          <pre class="code">Maya Thompson is 28 kg and needs epinephrine autoinjector
+dose after peanut anaphylaxis.</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--bad">Identifier-stripping</span>
+          <pre class="code">[NAME] is [NUMBER] kg and needs epinephrine
+autoinjector dose after peanut anaphylaxis.</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--good">Semantic preservation</span>
+          <pre class="code">[NAME] is 28 kg and needs epinephrine
+autoinjector dose after peanut anaphylaxis.</pre>
+        </div>
+      </div>
+      <p class="example__why">Weight is quasi-identifying in the abstract and decisive here — 28 kg sits near the autoinjector dosing threshold. Redacting it produces output that looks safer and answers worse. This is the case that breaks any policy expressed purely as a list of field types.</p>
+    </div>
+
+    <div class="example">
+      <p class="example__q">The same token can be a patient and a diagnosis.</p>
+      <div class="xform">
+        <div class="xform__cell xform__cell--full">
+          <span class="xform__label">Input</span>
+          <pre class="code">Referral for Addison Brooks. Addison disease on fludrocortisone,
 vomiting; stress-dose steroid?</pre>
-      <div class="code-block__head"><span class="code-block__label">Safe prompt</span></div>
-      <pre class="code">Referral for [NAME]. Addison disease on fludrocortisone,
-vomiting; stress-dose steroid?</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--bad">Identifier-stripping</span>
+          <pre class="code">Referral for [NAME]. [NAME] disease on
+fludrocortisone, vomiting; stress-dose steroid?</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--good">Semantic preservation</span>
+          <pre class="code">Referral for [NAME]. Addison disease on
+fludrocortisone, vomiting; stress-dose steroid?</pre>
+        </div>
+      </div>
+      <p class="example__why">A name-matching pass sees the string twice and masks both. One of them was the diagnosis, and the question was about adrenal crisis. Eponyms — Addison, Bell, Graves, Still, Crohn, Hodgkin — make this a systematic failure, not an edge case.</p>
     </div>
 
-    <h3>Uniqueness that isn't an identifier</h3>
-    <p>No name, no MRN, no date — and still re-identifying, because the population it describes has one member.</p>
-    <div class="code-block">
-      <div class="code-block__head"><span class="code-block__label">Input</span></div>
-      <pre class="code">Only HLH patient on 7th floor today</pre>
-      <div class="code-block__head"><span class="code-block__label">Safe prompt</span></div>
-      <pre class="code">Rare HLH case</pre>
+    <div class="example">
+      <p class="example__q">Uniqueness without an identifier.</p>
+      <div class="xform">
+        <div class="xform__cell xform__cell--full">
+          <span class="xform__label">Input</span>
+          <pre class="code">Only HLH patient in Room 712 today: ferritin 18000, platelets 22,
+fibrinogen 92. Does this meet treatment criteria?</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--bad">Identifier-stripping</span>
+          <pre class="code">Only [CONDITION] patient in [LOCATION] [DATE]:
+ferritin [NUMBER], platelets [NUMBER],
+fibrinogen [NUMBER]. Does this meet criteria?</pre>
+        </div>
+        <div class="xform__cell">
+          <span class="xform__label xform__label--good">Semantic preservation</span>
+          <pre class="code">Rare HLH case: ferritin 18000, platelets 22,
+fibrinogen 92. Does this meet treatment criteria?</pre>
+        </div>
+      </div>
+      <p class="example__why">Inverted on both axes. The stripped version keeps the re-identifying part — "only patient with this condition, this unit, this day" narrows to one person — and destroys the labs, which are literally the diagnostic criteria being asked about. The preserved version drops the uniqueness context and keeps the numbers.</p>
     </div>
 
-    <h3>Safe, but not yet useful</h3>
-    <p>A decon pass can succeed and still leave you with nothing worth sending. The tool says so rather than pretending otherwise.</p>
-    <div class="code-block">
-      <div class="code-block__head"><span class="code-block__label">Input</span></div>
-      <pre class="code">pt reports saw Dr. Thomas on 4/12/26</pre>
-      <div class="code-block__head"><span class="code-block__label">Safe review context</span></div>
-      <pre class="code">pt reports saw Dr. [NAME] on [DATE]</pre>
+    <h2>The evaluation contract</h2>
+
+    <p>Two objectives means two gates, and a system is only shippable if it clears both on the same case. Optimizing one is easy and produces a tool that is dangerous in a way its own metrics cannot see.</p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Term</th><th>Definition used in scoring</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>PHI-leaked output</strong></td><td>At least one labeled forbidden string survived into the destination output.</td></tr>
+          <tr><td><strong>Unsafe copy-allowed</strong></td><td>A leaked output that the pipeline nonetheless marked as safe to hand off. The worst category — a wrong answer delivered with confidence.</td></tr>
+          <tr><td><strong>Missing critical fact</strong></td><td>A fact labeled in advance as clinically required for that case did not survive the transform.</td></tr>
+          <tr><td><strong>Handoff-usable</strong></td><td>No labeled leak, <em>and</em> no missing labeled critical fact, <em>and</em> copy allowed. The only outcome that counts as a pass.</td></tr>
+        </tbody>
+      </table>
     </div>
-    <p>This is safe. It is also not a clinical question. The reviewer has to add one before this goes anywhere.</p>
 
-    <h2>Why pediatrics makes it harder</h2>
+    <p>Labeling the required facts per case, before running anything, is the part that makes the second objective measurable. Without it "clinical usefulness" stays a vibe and every scrubber looks fine.</p>
 
-    <p>Age is the whole problem. In adult medicine a birth date is an identifier you can usually drop without losing much. In pediatrics the age <em>is</em> the clinical variable — it drives dosing, the differential, the growth interpretation, and the red flags. A de-ID pass that masks the date and moves on has removed the thing the question depended on. That's why the age-band conversion sits at the center of this rather than at the edge.</p>
+    <p>Evaluation runs across roughly 3,150 case rows: two generated 500-case development suites (usability and adversarial), a 2,000-case persona regression, several small authored blind-spot suites aimed at known weaknesses, a clinician-authored seed set, and a real-world-shaped adversarial set. <strong>Every suite is generated, authored, or synthetic. No real patient data is used at any stage.</strong></p>
 
-    <p>The same is true for weight, which is both quasi-identifying and the input to most pediatric dosing, and for the family and household context that adult tooling treats as incidental.</p>
+    <h2>How this went wrong before it went right</h2>
+
+    <p>Each stage below looked like success at the time. The re-test is what changed the architecture. All figures are on synthetic fixtures.</p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Stage</th><th>What the evidence showed</th><th>What it forced</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Semantic rewrite</strong><br><span class="drop">partner engagement</span></td>
+            <td>Zero true leaks across 132 adversarial queries, with one validator false positive.</td>
+            <td>Semantic transformation preserves intent better than literal masking — but it leaned on a cloud model under a BAA, and over-minimized a full clinical prompt.</td>
+          </tr>
+          <tr>
+            <td><strong>Local NER baseline</strong></td>
+            <td>1 of 18 identifiers leaked in the first 10-case comparison; a deterministic prefilter closed the record-number gap.</td>
+            <td>Combine high-confidence patterns with contextual NER. Neither is sufficient alone.</td>
+          </tr>
+          <tr>
+            <td><strong>Distribution challenge</strong></td>
+            <td>Clean synthetic templates: zero leaks. The combined 1,132-query set: 79 of 2,526 expected terms missed.</td>
+            <td>Conversational, multilingual, multi-patient, family, URL, practice, and measurement cases matter far more than tidy templates. Passing on clean data predicts nothing.</td>
+          </tr>
+          <tr>
+            <td><strong>Replaying the shipped engine</strong></td>
+            <td>The polished rules-only build leaked 1,067 terms toward a chat destination and 915 toward a web destination — and marked every leaking case low-risk and copyable.</td>
+            <td>Bind release evidence to the engine that actually ships, and fail closed. Interface confidence is not pipeline evidence.</td>
+          </tr>
+          <tr>
+            <td><strong>The utility gate</strong></td>
+            <td>415 of 1,500 outputs lost a clinically critical fact — concentrated in pediatric dosing weights and criteria-relevant labs.</td>
+            <td>The thesis of this page, with a number on it: privacy-only optimization produces clinical harm. Label what must be preserved and measure it.</td>
+          </tr>
+          <tr>
+            <td><strong>Rules + NER, tuned</strong></td>
+            <td>A broad first gate hit zero leaks but lost required facts in 174 of 3,000 outputs. After targeted fixes, all 3,000 cleared both gates.</td>
+            <td>What works is clinical token shields, semantic transforms, destination-specific policies, residual validation, and an explicit engine — not more redaction.</td>
+          </tr>
+          <tr>
+            <td><strong>Browser prototype</strong><br><span class="drop">earlier internal build</span></td>
+            <td>The architecture called for local transform, visible correction, destination-safe send, and fail-loud behavior. The archived demo was still doing client-side regex.</td>
+            <td>The clinician interaction was right; the engineering wasn't. Shipping needs a validated browser model, a parity gate, server-side defense, and revalidation after any user correction.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p>Stage five is the one worth sitting with. The system was getting safer and less useful at the same time, and only one of those was instrumented.</p>
+    </div>
+
+    <h2>Failing closed</h2>
+
+    <p>If the model layer is part of the safety argument, then the system has to know what to do when that layer is missing. Running the same 72 outputs through three engine states makes the design visible.</p>
+
+    <div class="table-scroll">
+      <table class="data">
+        <thead>
+          <tr><th>Engine state</th><th>PHI leaked</th><th>Leaked <em>and</em> copy allowed</th><th>Handoff-usable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Rules only, model absent</td><td>3 / 72</td><td><strong>3</strong></td><td>69</td></tr>
+          <tr><td>Model unavailable, gate engaged</td><td>3 / 72</td><td><strong>0</strong></td><td>0</td></tr>
+          <tr><td>Rules + NER, model present</td><td>0 / 72</td><td><strong>0</strong></td><td>72</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>The middle row is the whole point. The same three leaks are present, but nothing is marked copyable — the tool refuses to hand off rather than degrading quietly into the top row, which is the genuinely dangerous configuration: mostly working, confidently wrong three times out of seventy-two, and telling the clinician it was fine.</p>
+
+    <h2>Against a conventional de-identification baseline</h2>
+
+    <div class="callout">
+      <span class="callout__label">Read the limitations first</span>
+      <p>This comparison is favorable by construction and should be read that way. The rubric is ours. The cases are ours. The comparator is a conventional de-identification tool being scored on a clinician-prompt task it was not built for, and it required compatibility work to run in our environment. An earlier adversarial add-on was used to harden our own pipeline before the final run. It is a directional result about task-fit, not a neutral benchmark.</p>
+    </div>
+
+    <p>With that said: across 1,000 shared source cases scored on the dual gate, the external de-identification baseline cleared the safety gate on 75.9% and the usability gate on 39.9%. The task-aware pipeline cleared both on 100%.</p>
+
+    <p>The usability number is the informative one. A conventional de-ID tool doing exactly what it was designed to do renders roughly six out of ten clinical prompts unanswerable — not because it failed, but because document release and prompt construction are different jobs and only one of them was its job.</p>
+
+    <h2>What it removes</h2>
+
+    <p>Direct handles: names including relatives' and providers'; chart, claim, accession, and device identifiers; phone numbers, emails, URLs, IP addresses; street addresses and ZIP-level geography; schools, camps, facilities, rooms, units, beds, floors; exact dates and birth dates. It also strips prompt-injection text, including instructions that attempt to talk the pipeline into preserving identifiers — a paste-driven tool has to assume its input is adversarial, because sometimes the input is a forwarded message.</p>
+
+    <p>What it protects: age bands derived from birth dates; decision-relevant labs when triage or criteria depend on them; exact weights where the answer is weight-based dosing; relationship roles such as <code>parent reports patient</code>; clinical eponyms and diagnoses when they are not functioning as identifiers; and the temporal <em>relationships</em> between events even when the absolute dates are gone.</p>
 
     <h2>Honest limits</h2>
 
     <div class="callout">
       <span class="callout__label">What this is not</span>
-      <p>Clinician Decon is not a legal de-identification certification tool, and using it is not a HIPAA compliance determination. It is a local PHI-minimizing prompt builder with a human review step that is not optional. The review step is the safety mechanism — the pipeline is what makes review fast enough to actually happen.</p>
+      <p>This is not a legal de-identification certification tool, and running text through it is not a HIPAA compliance determination. It is a local PHI-minimizing prompt builder with a human review step that is not optional. The review step is the safety mechanism. The pipeline exists to make that review fast enough that it actually happens, rather than to replace it.</p>
     </div>
 
-    <p>It is a research release. There is no formal threat model behind it yet, no independent security review, and no production hardening. Evaluation to date has run on synthetic fixtures and adversarial sets built specifically to break it, which is the right way to develop it and is not the same thing as proving it safe in a live clinic.</p>
+    <p>It is a research release. There is no formal threat model behind it yet, no independent security review, and no production hardening. Evaluation has run on synthetic fixtures and adversarial sets built specifically to break it — which is the right way to develop it, and is not the same as proving it safe in a live clinic.</p>
 
-    <p>If you are building something similar, the most useful thing I can tell you is that the failure mode is not the identifiers you remembered to strip. It is the context that identifies without being an identifier, and the clinical facts you destroyed on the way past it.</p>
+    <p>There is also a real tension the design does not resolve: every fact preserved for clinical utility is a fact retained for re-identification. The keep-rule narrows that surface but does not eliminate it, and a system that never made that trade would be one that always returns an unanswerable prompt. Anyone claiming to have solved this rather than traded against it is measuring only one of the two objectives.</p>
 
     <h2>The code</h2>
 
-    <p>The package, the fixture library, and the evaluation notes are public: <a class="inline" href="https://github.com/dochobbs/clinician-decon" target="_blank" rel="noopener noreferrer">github.com/dochobbs/clinician-decon</a>. If you want to talk about applying it, <a class="inline" href="mailto:doc@4bv.ai">doc@4bv.ai</a>.</p>
+    <p>The package, the fixture library, and the evaluation notes are public: <a class="inline" href="https://github.com/dochobbs/clinician-decon" target="_blank" rel="noopener noreferrer">github.com/dochobbs/clinician-decon</a>. If you're building something adjacent and want to compare notes, <a class="inline" href="mailto:doc@4bv.ai">doc@4bv.ai</a>.</p>
 
   </div>
 
