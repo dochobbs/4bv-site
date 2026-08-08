@@ -1,0 +1,63 @@
+name: Refresh contribution graph
+
+# The GitHub-provided token can't read a user's cross-repo contribution
+# calendar, so this needs a PAT with read:user stored as CONTRIB_TOKEN.
+# Without that secret the job exits cleanly and the site keeps the last
+# committed snapshot rather than publishing an empty year.
+
+on:
+  schedule:
+    - cron: '17 8 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch contribution calendar
+        env:
+          GH_TOKEN: ${{ secrets.CONTRIB_TOKEN }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "CONTRIB_TOKEN not set — keeping existing snapshot."
+            exit 0
+          fi
+          gh api graphql -f query='
+            query {
+              viewer {
+                contributionsCollection {
+                  contributionCalendar {
+                    totalContributions
+                    weeks { contributionDays { date contributionCount } }
+                  }
+                }
+              }
+            }' > raw.json
+          python3 - <<'PY'
+          import json
+          cal = json.load(open('raw.json'))['data']['viewer'] \
+                    ['contributionsCollection']['contributionCalendar']
+          days = [{"date": d["date"], "count": d["contributionCount"]}
+                  for w in cal["weeks"] for d in w["contributionDays"]]
+          json.dump({"total": cal["totalContributions"], "days": days},
+                    open('assets/contributions.json', 'w'), separators=(',', ':'))
+          print(f"{cal['totalContributions']} contributions across {len(days)} days")
+          PY
+          rm -f raw.json
+
+      - name: Commit if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- assets/contributions.json; then
+            echo "No change."
+          else
+            git add assets/contributions.json
+            git commit -m "CHORE: Refresh contribution graph"
+            git push
+          fi
