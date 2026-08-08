@@ -11,14 +11,16 @@
   <meta property="og:url" content="https://4bv.ai/">
   <meta property="og:title" content="4BV — Four pillars. One practice.">
   <meta property="og:description" content="Physician-owned consulting at the intersection of medicine, technology, and contemplative practice.">
-  <meta property="og:image" content="https://4bv.ai/assets/logo.png">
-  <meta property="og:image:alt" content="4BV — four interlocking blue circles">
+  <meta property="og:image" content="https://4bv.ai/assets/og/default.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="4BV — four pillars, one practice">
 
   <!-- Twitter / X -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="4BV — Four pillars. One practice.">
   <meta name="twitter:description" content="Physician-owned consulting at the intersection of medicine, technology, and contemplative practice.">
-  <meta name="twitter:image" content="https://4bv.ai/assets/logo.png">
+  <meta name="twitter:image" content="https://4bv.ai/assets/og/default.png">
 
   <link rel="icon" type="image/png" href="assets/logo.png">
   <link rel="stylesheet" href="design-system/colors_and_type.css">
@@ -202,11 +204,6 @@
       margin: 0 auto;
       width: 100%;
     }
-    /* Three separation tiers, so "related section" doesn't read the same as
-       "end of page": 2xl before the footer, xl between stacked sections,
-       and the section's own lg/md rhythm inside. */
-    .section + .section { padding-top: 0; }
-    .section:has(+ .section) { padding-bottom: var(--space-xl); }
 
     .section__eyebrow {
       font-family: var(--font-ui);
@@ -715,6 +712,69 @@
 
     <a href="#work" class="scroll-cue">the work</a>
   </header>
+
+  <!-- ============================================================
+       PHILOSOPHY — naming the four pillars the tagline promises
+       ============================================================ -->
+  <section class="philosophy" aria-labelledby="pillars-h">
+    <div class="philosophy-wrap">
+      <p class="section__eyebrow">The four pillars</p>
+      <h2 id="pillars-h" class="section__h">Who the work is for.</h2>
+      <p class="section__lede">Four constituencies in pediatric care, each with a different stake and a different way of being failed.</p>
+
+      <div class="pillars">
+
+        <div class="pillar">
+          <div class="pillar__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="var(--ring-1)" stroke-width="3"/></svg>
+          </div>
+          <div>
+            <span class="pillar__eyebrow">Stake</span>
+            <h3 class="pillar__name">Parents</h3>
+            <p class="pillar__body">Most pediatric decisions get made at home, at night, by someone who is not a clinician and has no one to ask. That is where the worry actually lives, and it is the least served part of the system.</p>
+            <p class="pillar__enemy">Fails as: an assistant that answers confidently and sends a sick child back to bed.</p>
+          </div>
+        </div>
+
+        <div class="pillar">
+          <div class="pillar__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="var(--ring-2)" stroke-width="3"/></svg>
+          </div>
+          <div>
+            <span class="pillar__eyebrow">Load</span>
+            <h3 class="pillar__name">Clinicians</h3>
+            <p class="pillar__body">The people carrying the work. Tooling should give time back to the encounter rather than extract more throughput from the person doing it.</p>
+            <p class="pillar__enemy">Fails as: efficiency gains that quietly become the new expected baseline.</p>
+          </div>
+        </div>
+
+        <div class="pillar">
+          <div class="pillar__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="var(--ring-3)" stroke-width="3"/></svg>
+          </div>
+          <div>
+            <span class="pillar__eyebrow">Succession</span>
+            <h3 class="pillar__name">Learners</h3>
+            <p class="pillar__body">The people who will practice after us. Using these tools well is becoming part of clinical competence, and very little of it is being taught deliberately.</p>
+            <p class="pillar__enemy">Fails as: teaching the tool instead of the judgment.</p>
+          </div>
+        </div>
+
+        <div class="pillar">
+          <div class="pillar__mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="13" fill="none" stroke="var(--ring-4)" stroke-width="3"/></svg>
+          </div>
+          <div>
+            <span class="pillar__eyebrow">Honesty</span>
+            <h3 class="pillar__name">Data &amp; research</h3>
+            <p class="pillar__body">The pillar that keeps the other three accountable. If we cannot measure whether something helps, we are guessing with other people's children.</p>
+            <p class="pillar__enemy">Fails as: reporting the number that flatters the product.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
 
   <!-- ============================================================
        WORK — four lanes
