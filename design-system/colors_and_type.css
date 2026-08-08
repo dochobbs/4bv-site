@@ -172,6 +172,133 @@
   /* ---------- Layout ---------- */
   --max-prose: 64ch;
   --max-page:  1100px;
+
+  /* ---------- Ring ladder ----------
+     The wordmark's four rings. In light these are the brand blues running
+     pale → deep. Held as their own tokens so dark can re-ladder them without
+     touching the Pantone constants above. */
+  --ring-1: var(--sky);
+  --ring-2: var(--blue);
+  --ring-3: var(--slate);
+  --ring-4: var(--ink);
+
+  /* ---------- Lane washes ---------- */
+  --lane-families:   rgba(175, 221, 255, 0.18);
+  --lane-clinicians: rgba(96, 163, 217, 0.10);
+  --lane-learners:   rgba(0, 59, 115, 0.06);
+  --lane-research:   rgba(5, 10, 48, 0.04);
+
+  /* ---------- Status pill borders ---------- */
+  --status-live-border:  rgba(47, 125, 84, 0.30);
+  --status-beta-border:  rgba(178, 122, 26, 0.30);
+  --status-paper-border: rgba(5, 10, 48, 0.18);
+
+  /* ---------- Partner logo plate ----------
+     Client logos are drawn for white grounds. Light mode needs nothing;
+     dark mode sets these to float them on a paper tile. */
+  --logo-plate:        transparent;
+  --logo-plate-pad:    0;
+  --logo-plate-radius: 0;
+
+  color-scheme: light;
+}
+
+/* =========================================================================
+   DARK
+   The four brand blues are Pantone constants and are never redefined here.
+   Only semantics flip. --slate scores 1.66:1 on this ground, which is why
+   text can't simply reuse the brand tokens.
+
+   Written twice on purpose: once for OS-dark when the reader hasn't chosen,
+   once for an explicit choice. CSS can't alias a selector across @media.
+   ========================================================================= */
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:      #0D1222;
+    --paper-2:    #141A2E;
+    --paper-3:    #1D2440;
+    --rule:       #262E4A;
+
+    --text-primary:   #E8EAF2;
+    --text-secondary: #AFC4DD;
+    --text-tertiary:  #8A93AD;
+    --text-on-dark:   #E8EAF2;
+    --text-link:      #8FC4EE;
+
+    --surface:         var(--paper);
+    --surface-sunken:  var(--paper-2);
+    --surface-inverse: var(--paper-3);
+
+    --success: #5FBF8C;
+    --warning: #E0AB57;
+    --error:   #E07B7B;
+
+    --shadow-atmosphere: 0 1px 2px rgba(0, 0, 0, 0.40), 0 8px 24px rgba(0, 0, 0, 0.35);
+
+    --ring-1: #EAF5FF;
+    --ring-2: #AFDDFF;
+    --ring-3: #60A3D9;
+    --ring-4: #3E70AE;
+
+    --lane-families:   rgba(175, 221, 255, 0.080);
+    --lane-clinicians: rgba(96, 163, 217, 0.065);
+    --lane-learners:   rgba(96, 163, 217, 0.040);
+    --lane-research:   rgba(255, 255, 255, 0.020);
+
+    --status-live-border:  rgba(95, 191, 140, 0.35);
+    --status-beta-border:  rgba(224, 171, 87, 0.35);
+    --status-paper-border: rgba(232, 234, 242, 0.22);
+
+    --logo-plate:        #FAFAF7;
+    --logo-plate-pad:    5px 9px;
+    --logo-plate-radius: 3px;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --paper:      #0D1222;
+  --paper-2:    #141A2E;
+  --paper-3:    #1D2440;
+  --rule:       #262E4A;
+
+  --text-primary:   #E8EAF2;
+  --text-secondary: #AFC4DD;
+  --text-tertiary:  #8A93AD;
+  --text-on-dark:   #E8EAF2;
+  --text-link:      #8FC4EE;
+
+  --surface:         var(--paper);
+  --surface-sunken:  var(--paper-2);
+  --surface-inverse: var(--paper-3);
+
+  --success: #5FBF8C;
+  --warning: #E0AB57;
+  --error:   #E07B7B;
+
+  --shadow-atmosphere: 0 1px 2px rgba(0, 0, 0, 0.40), 0 8px 24px rgba(0, 0, 0, 0.35);
+
+  --ring-1: #EAF5FF;
+  --ring-2: #AFDDFF;
+  --ring-3: #60A3D9;
+  --ring-4: #3E70AE;
+
+  --lane-families:   rgba(175, 221, 255, 0.080);
+  --lane-clinicians: rgba(96, 163, 217, 0.065);
+  --lane-learners:   rgba(96, 163, 217, 0.040);
+  --lane-research:   rgba(255, 255, 255, 0.020);
+
+  --status-live-border:  rgba(95, 191, 140, 0.35);
+  --status-beta-border:  rgba(224, 171, 87, 0.35);
+  --status-paper-border: rgba(232, 234, 242, 0.22);
+
+  --logo-plate:        #FAFAF7;
+  --logo-plate-pad:    5px 9px;
+  --logo-plate-radius: 3px;
+
+  color-scheme: dark;
 }
 
 /* =========================================================================
