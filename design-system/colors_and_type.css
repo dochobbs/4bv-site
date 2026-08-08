@@ -16,42 +16,42 @@
 
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-Light.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-Light.woff2") format("woff2");
   font-weight: 300; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-LightItalic.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-LightItalic.woff2") format("woff2");
   font-weight: 300; font-style: italic; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-Roman.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-Roman.woff2") format("woff2");
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-Italic.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-Italic.woff2") format("woff2");
   font-weight: 400; font-style: italic; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-Bold.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-Bold.woff2") format("woff2");
   font-weight: 700; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-BoldItalic.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-BoldItalic.woff2") format("woff2");
   font-weight: 700; font-style: italic; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-Heavy.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-Heavy.woff2") format("woff2");
   font-weight: 900; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Caecilia LT Std";
-  src: url("fonts/CaeciliaLTStd-HeavyItalic.otf") format("opentype");
+  src: url("fonts/CaeciliaLTStd-HeavyItalic.woff2") format("woff2");
   font-weight: 900; font-style: italic; font-display: swap;
 }
 
@@ -59,28 +59,28 @@
 
 @font-face {
   font-family: "Frutiger LT Std";
-  src: url("fonts/FrutigerLTStd-Light.otf") format("opentype");
+  src: url("fonts/FrutigerLTStd-Light.woff2") format("woff2");
   font-weight: 300; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Frutiger LT Std";
-  src: url("fonts/FrutigerLTStd-LightItalic.otf") format("opentype");
+  src: url("fonts/FrutigerLTStd-LightItalic.woff2") format("woff2");
   font-weight: 300; font-style: italic; font-display: swap;
 }
 @font-face {
   font-family: "Frutiger LT Std";
-  src: url("fonts/FrutigerLTStd-Roman.otf") format("opentype");
+  src: url("fonts/FrutigerLTStd-Roman.woff2") format("woff2");
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
   font-family: "Frutiger LT Std";
-  src: url("fonts/FrutigerLTStd-Italic.otf") format("opentype");
+  src: url("fonts/FrutigerLTStd-Italic.woff2") format("woff2");
   font-weight: 400; font-style: italic; font-display: swap;
 }
 /* Bold 65 not shipped — weight 600 falls through to Helvetica Neue/Arial. */
 @font-face {
   font-family: "Frutiger LT Std Cn";
-  src: url("fonts/FrutigerLTStd-Cn.otf") format("opentype");
+  src: url("fonts/FrutigerLTStd-Cn.woff2") format("woff2");
   font-weight: 400; font-style: normal; font-display: swap;
 }
 

@@ -28,3 +28,7 @@ invoices/
 # Browser-automation scratch output
 .playwright-mcp/
 wren-home-full.png
+
+# Source OTFs stay local. The site serves woff2 only — a woff2 is not an
+# installable desktop binary, which is the point.
+design-system/fonts/*.otf
