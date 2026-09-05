@@ -459,6 +459,13 @@
       margin: 0;
       letter-spacing: -0.005em;
     }
+    .pcard__meta {
+      font-family: var(--font-ui);
+      font-size: var(--fs-sm);
+      line-height: 1.4;
+      color: var(--text-secondary);
+      margin: -8px 0 0;
+    }
     .pcard__lede {
       font-family: var(--font-body);
       font-size: var(--fs-md);
@@ -854,6 +861,7 @@
               <span class="pcard__status pcard__status--beta">Free beta</span>
             </div>
             <h4 class="pcard__name">Wren</h4>
+            <p class="pcard__meta">Founder and clinical product lead · June 2026–present</p>
             <p class="pcard__lede"><em>A gentle pediatric assistant for parents.</em> Text it at 2am about the fever, the rash, the worry you can't quite name, and it helps you sort what's worth watching and what shouldn't wait.</p>
             <p class="pcard__tagline">Never wonder alone.</p>
             <div class="pcard__chips">
@@ -1035,7 +1043,12 @@
               <span class="pcard__status">Preprint incoming</span>
             </div>
             <h4 class="pcard__name">A pediatric AI benchmark</h4>
-            <p class="pcard__lede">The first evaluation suite built specifically for pediatric clinical AI — because adult benchmarks don't catch the failures that hurt kids. Methodology paper preprint incoming.</p>
+            <p class="pcard__lede">Scenarios start the way visits do: an undifferentiated complaint in a parent's words, across five age bands where the same fever means different things. Scoring counts what a model left out as heavily as what it got wrong, and penalizes ordering everything. A held-out set stays private.</p>
+            <div class="pcard__chips">
+              <span class="pcard__chip">Guideline-traced rubrics</span>
+              <span class="pcard__chip">Confirmation-bias variants</span>
+              <span class="pcard__chip">153 scenarios · 27 public</span>
+            </div>
             <a href="mailto:michael@hobbs.md" class="pcard__cta">Get notified →</a>
           </div>
 
