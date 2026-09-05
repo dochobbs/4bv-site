@@ -239,7 +239,7 @@ pre.code {
 /* ---------- Theme toggle (shared with the homepage) ---------- */
 .theme-toggle {
   position: fixed;
-  top: var(--space-md);
+  bottom: var(--space-md);
   right: var(--space-md);
   z-index: 10;
   display: inline-flex;
