@@ -22,7 +22,10 @@
   <meta name="twitter:description" content="Physician-owned consulting at the intersection of medicine, technology, and contemplative practice.">
   <meta name="twitter:image" content="https://4bv.ai/assets/og/default.png">
 
-  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="design-system/colors_and_type.css">
 
   <!-- Stamp the stored choice before first paint. No choice stored means the
@@ -107,8 +110,8 @@
 
     .tagline {
       font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
+      font-style: normal;
+      font-weight: 400;
       font-size: clamp(1.1rem, 2.6vw, 1.35rem);
       color: var(--text-secondary);
       margin: 0;
@@ -216,7 +219,7 @@
 
     .section__h {
       font-family: var(--font-display);
-      font-weight: 300;
+      font-weight: 400;
       font-size: clamp(2rem, 4vw, var(--fs-3xl));
       letter-spacing: -0.01em;
       margin: 0 0 var(--space-lg);
@@ -224,9 +227,9 @@
     }
 
     .section__lede {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-weight: 400;
       font-size: var(--fs-lg);
       color: var(--text-secondary);
       max-width: 56ch;
@@ -367,9 +370,9 @@
       letter-spacing: -0.01em;
     }
     .lane__lede {
-      font-family: var(--font-display);
-      font-style: italic;
-      font-weight: 300;
+      font-family: var(--font-body);
+      font-style: normal;
+      font-weight: 400;
       font-size: var(--fs-md);
       color: var(--text-secondary);
       max-width: 56ch;
@@ -583,6 +586,59 @@
       :root:not([data-theme="light"]) .theme-toggle .icon-sun { display: block; }
       :root:not([data-theme="light"]) .theme-toggle .icon-moon { display: none; }
     }
+
+    /* =====================================================================
+       WRITING — featured essays as rows, not cards
+       ===================================================================== */
+    #writing { border-top: var(--border-hairline); padding-bottom: var(--space-lg); }
+    #shipping { padding-top: var(--space-xl); }
+    /* Entries flow down two columns (not rows), so unequal heights never
+       leave a hole beside a neighbour and an odd count has no orphan row. */
+    .writing {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      column-count: 1;
+      column-gap: var(--space-2xl);
+    }
+    @media (min-width: 820px) { .writing { column-count: 2; } }
+    .writing__item {
+      break-inside: avoid;
+      padding: var(--space-md) 0 var(--space-lg);
+      border-top: var(--border-hairline);
+    }
+    .writing__title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: var(--fs-lg);
+      line-height: 1.25;
+      color: var(--text-primary);
+      text-decoration: none;
+      display: inline;
+    }
+    .writing__title:hover { color: var(--text-link); }
+    .writing__meta {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: var(--fs-xs);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin: 0 0 8px;
+    }
+    .writing__meta .date { color: var(--text-secondary); }
+    .writing__meta .date::before, .writing__meta .read::before { content: "·"; margin: 0 8px; opacity: 0.5; color: var(--text-tertiary); }
+    .writing__meta .read { font-variant-numeric: tabular-nums; }
+    .writing__meta .with { display: block; letter-spacing: 0.08em; text-transform: none; font-size: var(--fs-sm); color: var(--text-tertiary); margin-top: 4px; }
+    .writing__blurb {
+      font-family: var(--font-body);
+      font-size: var(--fs-sm);
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin: var(--space-xs) 0 0;
+      max-width: 60ch;
+    }
+    .writing__blurb a { color: var(--text-link); text-decoration: underline; text-underline-offset: 3px; }
 
     /* =====================================================================
        SHIPPING — contribution grid
@@ -960,7 +1016,7 @@
           <p class="lane__lede">Independent benchmarks and evaluation methodology.</p>
         </header>
 
-        <div class="cards">
+        <div class="cards cards--3">
 
           <div class="pcard pcard--static">
             <div class="pcard__head">
@@ -983,15 +1039,51 @@
             <a href="mailto:michael@hobbs.md" class="pcard__cta">Get notified →</a>
           </div>
 
+          <a href="aom/" class="pcard">
+            <div class="pcard__head">
+              <div class="pcard__mark" style="background: #fbf8f1; color: #1a1814;" aria-hidden="true">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                  <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- outer ear: helix from the top, down the lobe -->
+                    <path d="M36 40 C36 22 50 16 60 18 C74 21 78 36 74 48 C71 57 63 60 61 70 C59 80 50 86 41 82 C34 79 31 72 33 66"/>
+                    <!-- antihelix and canal -->
+                    <path d="M46 44 C48 34 62 34 62 46 C62 54 56 56 54 62"/>
+                    <path d="M42 56 C40 62 42 68 47 70"/>
+                  </g>
+                  <!-- the eardrum: the one fact the chart was clear about -->
+                  <circle cx="54" cy="62" r="2.6" fill="#7a1f24"/>
+                </svg>
+              </div>
+              <span class="pcard__status">Published</span>
+            </div>
+            <h4 class="pcard__name">They completed the chart</h4>
+            <p class="pcard__lede">One routine ear infection with two facts left blank. 41% of frontier-model answers invented the missing history; six of seven error types showed up, and bias was second rarest. Dedicated clinical tools fixed the stale dose and mostly asked instead; one kept fabricating with citations attached. One added sentence cut invention from 43% to 11%.</p>
+            <div class="pcard__chips">
+              <span class="pcard__chip">10 frontier models · 140 traces</span>
+              <span class="pcard__chip">8 clinical tools · 36 more</span>
+              <span class="pcard__chip">Open packet, quote-anchored</span>
+            </div>
+            <span class="pcard__cta">See the findings →</span>
+          </a>
+
           <a href="https://dochobbs.github.io/cds-eval-lab/" class="pcard" target="_blank" rel="noopener noreferrer">
             <div class="pcard__head">
-              <div class="pcard__mark" aria-hidden="true">
-                <img src="assets/projects/cds_eval_mark.png" alt="">
+              <div class="pcard__mark" style="background: #fbf8f1; color: #1a1814;" aria-hidden="true">
+                <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
+                  <g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- two tools, same question: overlapping frames -->
+                    <rect x="20" y="26" width="42" height="42" rx="6"/>
+                    <rect x="38" y="36" width="42" height="42" rx="6"/>
+                    <!-- the shared cell they disagree on -->
+                    <path d="M44 52h12M50 46v12" opacity="0.55"/>
+                  </g>
+                  <circle cx="72" cy="30" r="2.6" fill="#7a1f24"/>
+                </svg>
               </div>
-              <span class="pcard__status">Private / WIP</span>
+              <span class="pcard__status">In progress</span>
             </div>
-            <h4 class="pcard__name">Clinical decision support evaluation</h4>
-            <p class="pcard__lede">Head-to-head evaluation against the major third-party CDS tools, paired with original prompt design — our pediatric-tuned prompts perform on par with the commercial leaders. Internal benchmarks, structured grading, local-first stack.</p>
+            <h4 class="pcard__name">Clinical decision support, head to head</h4>
+            <p class="pcard__lede">The commercial clinical AI tools scored on what a clinician actually opens them for: is the citation real, is the guidance current, does it refuse a false premise, does it ask before it assumes. Eight tools have run the ear-infection chart in the open packet. The broader battery, with recency traps and fabricated-guideline traps, is still being built.</p>
             <span class="pcard__cta">Read the methodology →</span>
           </a>
 
@@ -999,6 +1091,71 @@
       </div>
     </section>
 
+  </section>
+
+  <!-- ============================================================
+       WRITING — featured essays, newest first. Add a row at the top.
+       ============================================================ -->
+  <section class="section" id="writing" aria-labelledby="writing-h">
+    <p class="section__eyebrow">Featured writing</p>
+    <h2 id="writing-h" class="section__h">Measured, then argued.</h2>
+    <p class="section__lede">Essays on what clinical AI actually does when you test it, and what to build instead.</p>
+    <ol class="writing">
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Aug 31, 2026</span><span class="read">30 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/compared-whom-michael-hobbs-md-wu0xc/" target="_blank" rel="noopener noreferrer">Compared to whom?</a>
+        <p class="writing__blurb">Every error the models made has a name in the human literature. An honest comparison of two differently fallible systems, and why adding a doctor to the loop is not automatically safer.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Aug 24, 2026</span><span class="read">15 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/anatomy-ai-clinical-error-michael-hobbs-md-gpokc/" target="_blank" rel="noopener noreferrer">The Anatomy of an AI Clinical Error</a>
+        <p class="writing__blurb">Ten frontier models, one synthetic ear infection, 140 traces. Where the invented facts came from, what identity changed, and the one sentence that cut fabrication by three quarters. <a href="aom/">Findings and packet →</a></p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">4bv.ai<span class="date">Aug 8, 2026</span><span class="read">14 min</span></span>
+
+        <a class="writing__title" href="decon/">A naive scrubber makes clinical AI less safe</a>
+        <p class="writing__blurb">Five different things get called de-identification. In pediatrics the fields that identify a patient are often the fields that make the answer correct, so deletion breaks the medicine. The dual-gate evaluation behind Clinician Decon.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">The Okay Doctor<span class="date">Jul 26, 2026</span><span class="read">16 min</span><span class="with">with David M. Nichols, MD</span></span>
+
+        <a class="writing__title" href="https://theokaydoctor.com/pocket-textbooks-to-pocket-intelligence/" target="_blank" rel="noopener noreferrer">From Pocket Textbooks to Pocket Intelligence</a>
+        <p class="writing__blurb">Clinicians have always worked from a pyramid of evidence, gut at the base and meta-analyses at the top. AI collapses retrieval to seconds and hides source quality, so the thing to teach is the epistemology, not the answer.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Jun 13, 2026</span><span class="read">7 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/llms-outperform-openevidence-really-frontier-models-write-hobbs-md-kj0jc/" target="_blank" rel="noopener noreferrer">"LLMs outperform OpenEvidence" is really "Frontier models write more skimmable answers"</a>
+        <p class="writing__blurb">Disaggregate the Nature Medicine paper and the gap is readability. Accuracy and safety tied, and the two things a reference tool exists for, citations and recency, were never scored.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Jan 15, 2026</span><span class="read">5 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/prompts-generative-ui-cognition-michael-hobbs-md-oqj5c/" target="_blank" rel="noopener noreferrer">Prompts Are Generative UI for Cognition</a>
+        <p class="writing__blurb">Prompting is not coding and not writing either. It sits between disciplines product teams already have, and a prompt for a pediatric triage system draws on clinical training as much as on either.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Dec 31, 2025</span><span class="read">3 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/what-providers-patients-actually-want-michael-hobbs-md-bf0bc/" target="_blank" rel="noopener noreferrer">What Providers (and Patients) Actually Want</a>
+        <p class="writing__blurb">Every physician can describe the best assistant they ever worked with, and none of it is about credentials. Not a tool, a teammate: one that knows when to interrupt, anticipates the next question, and can be handed something.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Sep 2, 2025</span><span class="read">3 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/mastering-medical-interview-humans-machines-michael-hobbs-md-fuywc/" target="_blank" rel="noopener noreferrer">Mastering the Medical Interview, for Humans and Machines</a>
+        <p class="writing__blurb">The most common procedure in medicine is the interview. Triage bots and symptom checkers are being built on it too, and if AI is going to be trusted with health it has to learn how that conversation heals.</p>
+      </li>
+      <li class="writing__item">
+        <span class="writing__meta">LinkedIn<span class="date">Jul 5, 2025</span><span class="read">5 min</span></span>
+
+        <a class="writing__title" href="https://www.linkedin.com/pulse/small-local-mighty-why-medgemma-signals-turning-point-hobbs-md-fingc/" target="_blank" rel="noopener noreferrer">Small, Local &amp; Mighty: Why MedGemma Signals a Turning Point</a>
+        <p class="writing__blurb">A credible medical model small enough to run beside the EHR, open enough to shape, and yours to run without sending patient data anywhere. Discharge instructions in Thai, generated on a laptop.</p>
+      </li>
+    </ol>
   </section>
 
   <!-- ============================================================

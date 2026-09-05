@@ -20,7 +20,10 @@
   <meta name="twitter:description" content="Why removing identifiers and preserving the medicine are two objectives, not one.">
   <meta name="twitter:image" content="https://4bv.ai/assets/og/decon.png">
 
-  <link rel="icon" type="image/png" href="../assets/logo.png">
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png">
   <link rel="stylesheet" href="../design-system/colors_and_type.css">
   <link rel="stylesheet" href="../design-system/page.css">
 
@@ -348,7 +351,7 @@ fibrinogen 92. Does this meet treatment criteria?</pre>
 
     <p>Labeling the required facts per case, before running anything, is the part that makes the second objective measurable. Without it "clinical usefulness" stays a vibe and every scrubber looks fine.</p>
 
-    <p>Evaluation runs across roughly 3,150 case rows: two generated 500-case development suites (usability and adversarial), a 2,000-case persona regression, several small authored blind-spot suites aimed at known weaknesses, a clinician-authored seed set, and a real-world-shaped adversarial set. <strong>Every suite is generated, authored, or synthetic. No real patient data is used at any stage.</strong></p>
+    <p>The release corpus is now 3,587 source cases rendered to 10,761 destination outputs (chat, a second chat product, and web search), built up from two generated 500-case development suites (usability and adversarial), a 2,000-case persona regression, several small authored blind-spot suites aimed at known weaknesses, a clinician-authored seed set, a real-world-shaped adversarial set, and the structured-record and cross-turn sets described below. <strong>Every suite is generated, authored, or synthetic. No real patient data is used at any stage.</strong></p>
 
     <h2>How this went wrong before it went right</h2>
 
@@ -395,12 +398,22 @@ fibrinogen 92. Does this meet treatment criteria?</pre>
             <td>The architecture called for local transform, visible correction, destination-safe send, and fail-loud behavior. The archived demo was still doing client-side regex.</td>
             <td>The clinician interaction was right; the engineering wasn't. Shipping needs a validated browser model, a parity gate, server-side defense, and revalidation after any user correction.</td>
           </tr>
+          <tr>
+            <td><strong>The stale artifact</strong><br><span class="drop">August 2026</span></td>
+            <td>Repository source masked a first name inside a note parenthetical on both engines. The packaged Mac app on the same machine, built from a pre-hardening snapshot, served it unmasked — marked low-risk and copyable — while every source-level gate stayed green.</td>
+            <td>Validation had only ever run against source. Now a smoke gate posts ten known-adversarial cases at the running build itself, and a build is not a release until the artifact passes.</td>
+          </tr>
+          <tr>
+            <td><strong>Residual fragments</strong><br><span class="drop">September 2026</span></td>
+            <td>A red team of twelve structured-record shapes (FHIR, HL7, JSON, OCR) failed six of them: 17 of 36 outputs kept identifier material, and all 17 allowed copy. The evaluator was searching for the exact source string, so <code>[MRN]DEFGHIJK</code> counted as clean.</td>
+            <td>Score remnants, not strings — an output fails if a residual token or the visible fragments around a placeholder preserve half the original value. Authoritative structured-field spans, propagation of confident detections, and a partial-remnant guard. Now 36 of 36, and the expanded corpus 10,761 of 10,761.</td>
+          </tr>
         </tbody>
       </table>
     </div>
 
     <div class="note">
-      <p>Stage five is the one worth sitting with. The system was getting safer and less useful at the same time, and only one of those was instrumented.</p>
+      <p>Stage five is the one worth sitting with. The system was getting safer and less useful at the same time, and only one of those was instrumented. The last two rows are the same lesson twice more: the gate was green because it was measuring the wrong artifact, then the wrong string.</p>
     </div>
 
     <h2>Failing closed</h2>
@@ -422,6 +435,8 @@ fibrinogen 92. Does this meet treatment criteria?</pre>
 
     <p>The middle row is the whole point. The same three leaks are present, but nothing is marked copyable — the tool refuses to hand off rather than degrading quietly into the top row, which is the genuinely dangerous configuration: mostly working, confidently wrong three times out of seventy-two, and telling the clinician it was fine.</p>
 
+    <p>That middle row is now the shipped default. The app, the CLI, and the validation command all run rules plus the local model; if the model is missing they report high risk and block copy rather than fall back to rules alone. The rules-only engine still exists for regression work and has to be asked for by name.</p>
+
     <h2>Against a conventional de-identification baseline</h2>
 
     <div class="callout">
@@ -432,6 +447,18 @@ fibrinogen 92. Does this meet treatment criteria?</pre>
     <p>With that said: across 1,000 shared source cases scored on the dual gate, the external de-identification baseline cleared the safety gate on 75.9% and the usability gate on 39.9%. The task-aware pipeline cleared both on 100%.</p>
 
     <p>The usability number is the informative one. A conventional de-ID tool doing exactly what it was designed to do renders roughly six out of ten clinical prompts unanswerable — not because it failed, but because document release and prompt construction are different jobs and only one of them was its job.</p>
+
+    <h2>A better detector that answers worse</h2>
+
+    <p>The cleanest test of the thesis arrived in September 2026, when a newer PII-masking model was published with results that beat the local model this tool ships on the publisher's own benchmark, especially on identifiers that recur across conversation turns. The obvious move was to swap it in. So both models were run through the identical pipeline — same deterministic rules, same span composition, same destination rendering, same evaluator — and scored on the product task rather than on raw detection.</p>
+
+    <p>On the frozen release corpus of 3,171 source cases, the shipping model kept a perfect product score. The candidate erased clinical facts in 221 source cases and leaked an EHR wrapper field in one. On a new 260-case cross-turn stress set built to favor it, the candidate did cut recurring-identifier leaks from 10 cases to 3 — and in the same run made 61 cases unusable and damaged 20 clean sensitive-clinical controls that contained no identifiers at all.</p>
+
+    <div class="note">
+      <p>A stronger detector, measured on detection, produced a worse clinical prompt, measured on the prompt. Nothing about the pipeline changed except the model. The second gate is what made that visible.</p>
+    </div>
+
+    <p>The candidate stays in the repository as an experimental adapter with the comparison harness. If multi-turn masking becomes a product requirement it is worth revisiting as a secondary guard, after label-specific clinical calibration and a much larger clinician-reviewed clean-negative set. The raw comparison was recorded before the hardening in the table above, and that hardening does not retroactively change it.</p>
 
     <h2>What it removes</h2>
 
@@ -446,13 +473,13 @@ fibrinogen 92. Does this meet treatment criteria?</pre>
       <p>This is not a legal de-identification certification tool, and running text through it is not a HIPAA compliance determination. It is a local PHI-minimizing prompt builder with a human review step that is not optional. The review step is the safety mechanism. The pipeline exists to make that review fast enough that it actually happens, rather than to replace it.</p>
     </div>
 
-    <p>It is a research release. There is no formal threat model behind it yet, no independent security review, and no production hardening. Evaluation has run on synthetic fixtures and adversarial sets built specifically to break it — which is the right way to develop it, and is not the same as proving it safe in a live clinic.</p>
+    <p>It is a research release. There is no formal threat model behind it yet, no independent security review, and no production hardening. Evaluation has run on synthetic fixtures and adversarial sets built specifically to break it — which is the right way to develop it, and is not the same as proving it safe in a live clinic. The Mac build is unsigned and not notarized. The hardening in the table closed the failure families that were found; it does not establish completeness on real-world text the fixtures never represented, and the residual-fragment episode is a reminder that the next family is found by the next red team, not by the last green run.</p>
 
     <p>There is also a real tension the design does not resolve: every fact preserved for clinical utility is a fact retained for re-identification. The keep-rule narrows that surface but does not eliminate it, and a system that never made that trade would be one that always returns an unanswerable prompt. Anyone claiming to have solved this rather than traded against it is measuring only one of the two objectives.</p>
 
     <h2>The code</h2>
 
-    <p>The package, the fixture library, and the evaluation notes are public: <a class="inline" href="https://github.com/dochobbs/clinician-decon" target="_blank" rel="noopener noreferrer">github.com/dochobbs/clinician-decon</a>. If you're building something adjacent and want to compare notes, <a class="inline" href="mailto:doc@4bv.ai">doc@4bv.ai</a>.</p>
+    <p>The package, the fixture library, and the evaluation notes are public: <a class="inline" href="https://github.com/dochobbs/clinician-decon" target="_blank" rel="noopener noreferrer">github.com/dochobbs/clinician-decon</a>. The web app runs from a checkout on <code>127.0.0.1</code> with no API key. There is also a self-contained Mac app — a native window around that same local server, with the Python runtime and the model files bundled so a clinician never sees a terminal — built from the repository with one script. It is unsigned, so macOS will warn on first open. If you're building something adjacent and want to compare notes, <a class="inline" href="mailto:doc@4bv.ai">doc@4bv.ai</a>.</p>
 
   </div>
 

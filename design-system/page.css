@@ -37,7 +37,7 @@
 }
 .masthead__h {
   font-family: var(--font-display);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2.25rem, 5vw, var(--fs-3xl));
   letter-spacing: -0.015em;
   line-height: 1.06;
@@ -45,10 +45,12 @@
   margin: 0 0 var(--space-md);
 }
 .masthead__lede {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 300;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 400;
   font-size: var(--fs-lg);
+  line-height: 1.42;
+  letter-spacing: -0.003em;
   color: var(--text-secondary);
   margin: 0;
 }
@@ -106,8 +108,9 @@
   max-width: 64ch;
 }
 .note p {
-  font-family: var(--font-display);
-  font-style: italic;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 500;
   font-size: var(--fs-md);
   color: var(--text-secondary);
   margin: 0;
@@ -133,6 +136,13 @@ table.data th {
   padding: 0 var(--space-md) var(--space-sm) 0;
   border-bottom: 1px solid var(--rule);
   vertical-align: bottom;
+}
+table.data { font-variant-numeric: lining-nums; }
+table.data td.num, table.data th.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+  white-space: nowrap;
 }
 table.data td {
   padding: var(--space-sm) var(--space-md) var(--space-sm) 0;

@@ -123,3 +123,9 @@ if __name__ == "__main__":
         "A naive scrubber makes clinical AI less safe.",
         "Why removing identifiers and preserving the medicine are two objectives, not one.",
     )
+    card(
+        "aom.png",
+        "Pediatric AI evaluation",
+        "They completed the chart.",
+        "Ten frontier models, one ear infection, and the facts they invented to finish the plan.",
+    )

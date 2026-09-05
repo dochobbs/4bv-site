@@ -55,6 +55,67 @@
   font-weight: 900; font-style: italic; font-display: swap;
 }
 
+/* ---------- @font-face : Fago (FontFont) ----------
+   Display and body register, chosen 2026-09-05 after a four-round type
+   review. Fago Office Serif carries headlines; FagoNo (lining figures cut)
+   carries reading text and the small-caps UI register. Weight map:
+   serif Regular=400 Bold=700; sans Regular=400 Medium=500 Bold=700. */
+
+@font-face {
+  font-family: "Fago Office Serif";
+  src: url("fonts/FagoOfficeSerif-Regular.woff2") format("woff2");
+  font-weight: 300 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Fago Office Serif";
+  src: url("fonts/FagoOfficeSerif-RegularItalic.woff2") format("woff2");
+  font-weight: 300 500; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Fago Office Serif";
+  src: url("fonts/FagoOfficeSerif-Bold.woff2") format("woff2");
+  font-weight: 600 900; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Fago";
+  src: url("fonts/FagoNoLf-Regular.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Fago";
+  src: url("fonts/FagoNoLf-Italic.woff2") format("woff2");
+  font-weight: 400; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: "Fago";
+  src: url("fonts/FagoNoLf-Medium.woff2") format("woff2");
+  font-weight: 500 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Fago";
+  src: url("fonts/FagoNoLf-Bold.woff2") format("woff2");
+  font-weight: 700 900; font-style: normal; font-display: swap;
+}
+
+/* ---------- @font-face : Fedra Mono (Typotheque) ----------
+   Measurement register: table numerals, figures, code. */
+
+@font-face {
+  font-family: "Fedra Mono";
+  src: url("fonts/FedraMono-Book.woff2") format("woff2");
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Fedra Mono";
+  src: url("fonts/FedraMono-Medium.woff2") format("woff2");
+  font-weight: 500; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: "Fedra Mono";
+  src: url("fonts/FedraMono-Bold.woff2") format("woff2");
+  font-weight: 600 900; font-style: normal; font-display: swap;
+}
+
 /* ---------- @font-face : Frutiger LT Std ---------- */
 
 @font-face {
@@ -96,10 +157,10 @@
   --sky:        #AFDDFF;   /* Pale Blue, Pantone 291 C — fourth ring */
 
   /* ---------- Surfaces ---------- */
-  --paper:      #FAFAF7;
-  --paper-2:    #F2F1EC;
-  --paper-3:    #E6E5DE;
-  --rule:       #E6E5DE;
+  --paper:      #FCFCFD;   /* near-white, cool. Was cream #FAFAF7 (2026-09-05) */
+  --paper-2:    #F4F5F8;
+  --paper-3:    #E2E5EB;
+  --rule:       #E2E5EB;
 
   /* ---------- Semantic foreground ---------- */
   --text-primary:    var(--ink);
@@ -149,16 +210,16 @@
      One family, four weights (Light 300 / Roman 400 / Bold 700 / Heavy 900);
      hierarchy is built on weight, not optical-size cuts. Frutiger LT Std is
      the UI register only: datelines, badges, button labels, identifiers. */
-  --font-display:  "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
-  --font-subhead:  "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
-  --font-body:     "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
-  --font-caption:  "Caecilia LT Std", "Iowan Old Style", Georgia, serif;
-  --font-ui:       "Frutiger LT Std", "Helvetica Neue", Arial, sans-serif;
-  --font-mono:     "Frutiger LT Std Cn", "Frutiger LT Std", ui-monospace, monospace;
+  --font-display:  "Fago Office Serif", "Iowan Old Style", Georgia, serif;
+  --font-subhead:  "Fago Office Serif", "Iowan Old Style", Georgia, serif;
+  --font-body:     "Fago", "Helvetica Neue", Arial, sans-serif;
+  --font-caption:  "Fago", "Helvetica Neue", Arial, sans-serif;
+  --font-ui:       "Fago", "Helvetica Neue", Arial, sans-serif;
+  --font-mono:     "Fedra Mono", ui-monospace, monospace;
 
   --fs-xs:   12px;
   --fs-sm:   14px;
-  --fs-md:   19px;   /* body baseline */
+  --fs-md:   17.5px; /* body baseline (Fago; was 19px for Caecilia) */
   --fs-lg:   22px;
   --fs-xl:   28px;
   --fs-2xl:  36px;
@@ -166,7 +227,7 @@
   --fs-4xl:  72px;
 
   --lh-tight: 1.1;
-  --lh-base:  1.55;
+  --lh-base:  1.6;
   --lh-loose: 1.7;
 
   /* ---------- Layout ---------- */
